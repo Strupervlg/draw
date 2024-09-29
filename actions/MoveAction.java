@@ -9,7 +9,7 @@ import shapes.Shape;
  * MoveAction implements a single undoable action where all the Shapes in a
  * given Selection are moved.
  */
-public class MoveAction implements DrawAction {
+public class MoveAction implements DrawAction, MergeAction {
 
 	Selection selected;
 	Point movement;
@@ -48,6 +48,16 @@ public class MoveAction implements DrawAction {
 		for (Shape s : selected) {
 			s.move(-movement.x, -movement.y);
 		}
+	}
+
+	public boolean merge(MergeAction other) {
+		if (other instanceof MoveAction otherCommand) {
+            if (this.selected.equals(otherCommand.selected)) {
+				this.movement.translate(otherCommand.movement.x, otherCommand.movement.y);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

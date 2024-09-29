@@ -38,6 +38,14 @@ public class UndoManager {
 	 */
 	public void addAction(DrawAction action) {
 		this.redoStack.clear();
+		if(!this.undoStack.empty()) {
+			DrawAction otherAction = this.undoStack.peek();
+			if(action instanceof MergeAction mergeAction
+					&& otherAction instanceof MergeAction otherMergeAction
+					&& otherMergeAction.merge(mergeAction)) {
+				return;
+			}
+		}
 		this.undoStack.push(action);
 	}
 
