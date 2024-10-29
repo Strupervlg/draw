@@ -1,13 +1,13 @@
 package actions;
 
-import logic.Drawing;
+import shapes.Drawing;
 import shapes.Shape;
 
 /**
  * AddAction implements a single undoable action where a Shape is added to a
  * Drawing.
  */
-public class AddAction implements DrawAction {
+public class AddAction implements DrawAction, MergeAction {
 
 	Drawing d;
 	Shape s;
@@ -41,4 +41,14 @@ public class AddAction implements DrawAction {
 		d.removeShape(s);
 	}
 
+	@Override
+	public boolean merge(MergeAction other) {
+		if (other instanceof ResizeAction otherCommand) {
+			if (this.s.equals(otherCommand.shape)) {
+				this.s.setPoint2(otherCommand.newPoint2);
+				return true;
+			}
+		}
+		return false;
+	}
 }

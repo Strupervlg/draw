@@ -1,18 +1,14 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
-import logic.Drawing;
-import logic.DrawingController;
+import events.RepaintActionEvent;
+import events.RepaintActionListener;
+import shapes.Drawing;
+import controller.DrawingController;
 
 /**
  * Graphical user interface for the Drawing editor "Draw"
@@ -30,9 +26,11 @@ public class DrawGUI extends JFrame {
 	 * @author Alex Lagerstedt
 	 * 
 	 */
-	private class DrawingContainer extends JPanel {
+	public class DrawingContainer extends JPanel implements RepaintActionListener {
 
 		private static final long serialVersionUID = 0;
+
+		private Drawing drawing;
 
 		public DrawingContainer() {
 			super(new GridBagLayout());
@@ -40,14 +38,42 @@ public class DrawGUI extends JFrame {
 
 		public void setDrawing(Drawing d) {
 			this.removeAll();
-			this.add(d);
+			for(java.awt.event.MouseListener listener : this.getMouseListeners()) {
+				this.removeMouseListener(listener);
+			}
+
+			for(java.awt.event.MouseMotionListener listener : this.getMouseMotionListeners()) {
+				this.removeMouseMotionListener(listener);
+			}
+
+			drawing = d;
 			mouse = new MouseListener(controller, tools);
-			d.addMouseListener(mouse);
-			d.addMouseMotionListener(mouse);
-			setPreferredSize(d.getPreferredSize());
+			this.addMouseListener(mouse);
+			this.addMouseMotionListener(mouse);
+			mouse.addSelectShapeActionListener(tools);
+			setBorder(BorderFactory.createLineBorder(Color.black));
+			setBackground(Color.WHITE);
+			setPreferredSize(d.getSize());
 			pack();
 		}
 
+		public BufferedImage getImage() {
+			BufferedImage bi = new BufferedImage(getPreferredSize().width,
+					getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
+			Graphics g = bi.createGraphics();
+			this.print(g);
+			return bi;
+		}
+
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			drawing.drawShapes(g);
+		}
+
+		@Override
+		public void repaint(RepaintActionEvent event) {
+			this.repaint();
+		}
 	}
 
 	public class StatusBar extends JLabel {
@@ -94,6 +120,7 @@ public class DrawGUI extends JFrame {
 		scrollpane = new JScrollPane(drawingContainer);
 
 		controller = new DrawingController(this);
+		controller.addRepaintActionListener(drawingContainer);
 		tools = new ToolBox(controller);
 		controller.newDrawing(new Dimension(500, 380));
 
@@ -103,7 +130,7 @@ public class DrawGUI extends JFrame {
 		getContentPane().add(scrollpane, BorderLayout.CENTER);
 		// getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-		MenuListener mainMenuListener = new MenuListener(controller);
+		MenuListener mainMenuListener = new MenuListener(controller, drawingContainer);
 		JMenuBar mainMenu = new MainMenu(mainMenuListener);
 		this.setJMenuBar(mainMenu);
 

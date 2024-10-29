@@ -1,15 +1,16 @@
-package logic;
+package shapes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import shapes.Shape;
-
 public class Selection implements Iterable<Shape> {
+
+	private Drawing drawing;
 
 	private ArrayList<Shape> selected;
 
-	public Selection() {
+	public Selection(Drawing drawing) {
+		this.drawing = drawing;
 		selected = new ArrayList<Shape>(0);
 	}
 
@@ -77,5 +78,23 @@ public class Selection implements Iterable<Shape> {
 			}
 		}
 		return super.equals(obj);
+	}
+
+	public void move(int x, int y) {
+		for (Shape s : selected) {
+			s.move(x, y);
+		}
+	}
+
+	public void removeShapesFromDrawing() {
+		for (Shape s : selected) {
+			drawing.removeShape(s);
+		}
+	}
+
+	public void insertShapesFromDrawing() {
+		for (Shape s : selected) {
+			drawing.insertShape(s);
+		}
 	}
 }

@@ -1,39 +1,22 @@
-package logic;
+package shapes;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-
-import shapes.Shape;
-
-public class Drawing extends JPanel implements Iterable<Shape> {
-
-	private static final long serialVersionUID = 0;
+public class Drawing implements Iterable<Shape> {
 
 	private ArrayList<Shape> shapes;
 
+	private Dimension size;
+
+	private Selection selection;
+
 	public Drawing(Dimension size) {
 		shapes = new ArrayList<Shape>(0);
+		selection = new Selection(this);
 
-		this.setPreferredSize(size);
-		setBorder(BorderFactory.createLineBorder(Color.black));
-		setBackground(Color.WHITE);
-	}
-
-	public BufferedImage getImage() {
-
-		BufferedImage bi = new BufferedImage(getPreferredSize().width,
-				getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
-		Graphics g = bi.createGraphics();
-		this.print(g);
-		return bi;
+		this.size = size;
 	}
 
 	public Shape getShapeAt(Point p) {
@@ -78,14 +61,6 @@ public class Drawing extends JPanel implements Iterable<Shape> {
 		return shapes.size();
 	}
 
-	public void paintComponent(Graphics g) {
-
-		super.paintComponent(g);
-		for (Shape s : shapes) {
-			s.draw(g);
-		}
-	}
-
 	public void raise(Shape s) {
 		int index = shapes.indexOf(s);
 		if (index > 0) {
@@ -98,4 +73,27 @@ public class Drawing extends JPanel implements Iterable<Shape> {
 		shapes.remove(s);
 	}
 
+	public Dimension getSize() {
+		return size;
+	}
+
+	public Selection getSelection() {
+		return selection;
+	}
+
+	public void clearSelection() {
+		selection.empty();
+	}
+
+	public void selectAll() {
+		for (Shape sh : shapes) {
+			selection.add(sh);
+		}
+	}
+
+	public void drawShapes(Graphics g) {
+		for (Shape s : shapes) {
+			s.draw(g);
+		}
+	}
 }

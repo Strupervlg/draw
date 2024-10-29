@@ -4,11 +4,12 @@ import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
-import logic.DrawingController;
-import logic.Tool;
+import events.SelectShapeActionEvent;
+import events.SelectShapeActionListener;
+import controller.DrawingController;
 import shapes.Circle;
-import shapes.FillableShape;
 import shapes.Line;
 import shapes.Rectangle;
 import shapes.Shape;
@@ -26,15 +27,8 @@ public class MouseListener extends MouseAdapter {
 
 	private DrawingController c;
 	private ToolBox tools;
-
 	boolean isDrawing;
-	boolean multiSelect;
-
-	private Point startPos;
 	private Point lastPos;
-
-	private Point mouseDelta;
-
 	private Shape newShape;
 
 	/**
@@ -50,27 +44,20 @@ public class MouseListener extends MouseAdapter {
 		this.tools = t;
 		this.c = c;
 		this.newShape = null;
-		this.mouseDelta = new Point(0, 0);
-
 	}
 
 	public void mouseDragged(MouseEvent m) {
-
-		mouseDelta.x = m.getPoint().x - lastPos.x;
-		mouseDelta.y = m.getPoint().y - lastPos.y;
+		Point position = m.getPoint();
 
 		if (isDrawing && (newShape != null)) {
-			newShape.setPoint2(lastPos);
+			c.resizeShape(newShape, lastPos);
 		}
 
-		if (c.getTool() == Tool.SELECT) {
-			c.moveSelectedShapes(new Point(mouseDelta.x, mouseDelta.y));
+		if (tools.getTool() == Tool.SELECT) {
+			c.moveSelectedShapes(new Point(position.x - lastPos.x, position.y - lastPos.y));
 		}
-
-		c.getDrawing().repaint();
 
 		lastPos = m.getPoint();
-
 	}
 
 	public void mouseMoved(MouseEvent m) {
@@ -78,64 +65,57 @@ public class MouseListener extends MouseAdapter {
 	}
 
 	public void mousePressed(MouseEvent m) {
-		startPos = lastPos;
+		Point position = m.getPoint();
 
-		Tool t = c.getTool();
+		Tool t = tools.getTool();
 		isDrawing = true;
 
 		if (t == Tool.SELECT) {
 
-			Shape tmp = c.getDrawing().getShapeAt(startPos);
+			Shape tmp = c.getDrawing().getShapeAt(position);
 
 			if (((m.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0)
-					&& !c.getSelection().contains(tmp)) {
-				c.getSelection().empty();
+					&& !c.getDrawing().getSelection().contains(tmp)) {
+				c.clearSelection();
 			}
 
-			if ((tmp != null) && (!c.getSelection().contains(tmp))) {
+			if ((tmp != null) && (!c.getDrawing().getSelection().contains(tmp))) {
 
 				// empty the selection before selecting a new shape if shift is
 				// not down
-
-				tools.setColor(tmp.getColor());
-
-				if ((c.getSelection().isEmpty())
-						&& (tmp instanceof FillableShape)) {
-					tools.setFill(((FillableShape) tmp).getFilled());
+				if(c.getDrawing().getSelection().isEmpty()) {
+					this.fireSelectedShape(tmp);
+				} else {
+					//TODO испускать событие на множественное выделение,
+					// после чего буду блокироваться fill size и color в toolBox
 				}
-
-				if (tmp instanceof Text) {
-					tools.setFontSize(((Text) tmp).getFont().getSize());
-				}
-
-				c.getSelection().add(tmp);
-
+				c.addSelectionShape(tmp);
 			}
-
-			c.getDrawing().repaint();
 
 		}
 		else if (t == Tool.RECTANGLE) {
-			newShape = new Rectangle(startPos.x, startPos.y, tools.getFill());
+			newShape = new Rectangle(position.x, position.y, tools.getFill());
 		}
 		else if (t == Tool.CIRCLE) {
-			newShape = new Circle(startPos.x, startPos.y, tools.getFill());
+			newShape = new Circle(position.x, position.y, tools.getFill());
 		}
 		else if (t == Tool.LINE) {
-			newShape = new Line(startPos.x, startPos.y);
+			newShape = new Line(position.x, position.y);
 		}
 		else if (t == Tool.TEXT) {
 			try {
-				newShape = new Text(startPos.x, startPos.y, tools.getFontSize());
+				newShape = new Text(position.x, position.y, tools.getFontSize());
 			}
 			catch (IllegalArgumentException e) {
 			}
-			c.getDrawing().repaint();
 		}
 
 		if (newShape != null) {
 			c.colorShape(newShape, tools.getColor());
 			c.addShape(newShape);
+		}
+		if(newShape instanceof Text) {
+			newShape = null;
 		}
 
 	}
@@ -143,7 +123,25 @@ public class MouseListener extends MouseAdapter {
 	public void mouseReleased(MouseEvent m) {
 		isDrawing = false;
 		newShape = null;
-		c.getDrawing().repaint();
 	}
 
+
+	// ------------------------------- EVENTS ---------------------------------
+	private ArrayList<SelectShapeActionListener> selectShapeListListener = new ArrayList<>();
+
+	public void addSelectShapeActionListener(SelectShapeActionListener listener) {
+		selectShapeListListener.add(listener);
+	}
+
+	public void removeSelectShapeActionListener(SelectShapeActionListener listener) {
+		selectShapeListListener.remove(listener);
+	}
+
+	private void fireSelectedShape(Shape shape) {
+		for(SelectShapeActionListener listener: selectShapeListListener) {
+			SelectShapeActionEvent event = new SelectShapeActionEvent(listener);
+			event.setShape(shape);
+			listener.selectedShape(event);
+		}
+	}
 }

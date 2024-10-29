@@ -1,4 +1,4 @@
-package logic;
+package controller;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,18 +14,15 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import shapes.Circle;
-import shapes.Line;
-import shapes.Rectangle;
-import shapes.Shape;
-import shapes.Text;
+import gui.DrawGUI;
+import shapes.*;
 
 public class DrawIO {
 
-	public void export(File f, DrawingController c) {
+	public void export(File f, DrawingController c, DrawGUI.DrawingContainer drawingContainer) {
 		try {
-			c.getSelection().empty();
-			BufferedImage bi = c.getDrawing().getImage(); // retrieve image
+			c.getDrawing().clearSelection();
+			BufferedImage bi = drawingContainer.getImage(); // retrieve image
 			ImageIO.write(bi, "png", f);
 		}
 		catch (IOException e) {
@@ -115,8 +112,8 @@ public class DrawIO {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(f));
 
-			out.write(d.getPreferredSize().width + ","
-					+ d.getPreferredSize().height + "\n");
+			out.write(d.getSize().width + ","
+					+ d.getSize().height + "\n");
 
 			for (Shape s : c.getDrawing()) {
 				out.write(s.toString() + "\n");

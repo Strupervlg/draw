@@ -8,6 +8,14 @@ import java.awt.Point;
 
 public abstract class Shape {
 
+	private static final Color DEFAULT_COLOR = Color.BLACK;
+
+	private static final double DEFAULT_STROKE_WIDTH = 2;
+
+	private static final int DEFAULT_WIDTH = 25;
+
+	private static final int DEFAULT_HEIGHT = 25;
+
 	protected Point point1;
 	protected Point point2;
 
@@ -17,10 +25,10 @@ public abstract class Shape {
 
 	public Shape(Point p) {
 		point1 = p;
-		point2 = new Point(p.x + 25, p.y + 25);
-		color = Color.BLACK;
+		point2 = new Point(p.x + DEFAULT_WIDTH, p.y + DEFAULT_HEIGHT);
+		color = DEFAULT_COLOR;
 		selected = false;
-		strokeWidth = 2;
+		strokeWidth = DEFAULT_STROKE_WIDTH;
 	}
 
 	public void draw(Graphics g) {
@@ -142,5 +150,9 @@ public abstract class Shape {
 					&& this.strokeWidth == otherShape.strokeWidth;
 		}
 		return super.equals(obj);
+	}
+
+	public Point getPoint2() {
+		return this.point2;
 	}
 }
