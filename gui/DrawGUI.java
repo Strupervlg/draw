@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.*;
@@ -47,10 +49,33 @@ public class DrawGUI extends JFrame {
 			}
 
 			drawing = d;
-			mouse = new MouseListener(controller, tools);
-			this.addMouseListener(mouse);
-			this.addMouseMotionListener(mouse);
-			mouse.addSelectShapeActionListener(tools);
+
+			addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					super.mousePressed(e);
+					tools.getSelectedTool().mousePressed(e);
+				}
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					super.mouseReleased(e);
+					tools.getSelectedTool().mouseReleased(e);
+				}
+			});
+
+			addMouseMotionListener(new MouseAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent e) {
+					super.mouseMoved(e);
+					tools.getSelectedTool().mouseMoved(e);
+				}
+				@Override
+				public void mouseDragged(MouseEvent e){
+					super.mouseDragged(e);
+					tools.getSelectedTool().mouseDragged(e);
+				}
+			});
+
 			setBorder(BorderFactory.createLineBorder(Color.black));
 			setBackground(Color.WHITE);
 			setPreferredSize(d.getSize());
@@ -93,7 +118,6 @@ public class DrawGUI extends JFrame {
 
 	private DrawingController controller;
 	private DrawingContainer drawingContainer;
-	private MouseListener mouse;
 	private ToolBox tools;
 	private JScrollPane scrollpane;
 

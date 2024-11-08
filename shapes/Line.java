@@ -11,6 +11,10 @@ public class Line extends Shape {
 		super(new Point(x, y));
 	}
 
+	public Line(Line line) {
+		this(line.point1.x, line.point1.y);
+	}
+
 	public void drawShape(Graphics g) {
 
 		((Graphics2D) g).setStroke(new BasicStroke((float) strokeWidth));
@@ -22,6 +26,11 @@ public class Line extends Shape {
 	@Override
 	public String toString() {
 		return "line;" + super.toString();
+	}
+
+	@Override
+	public Shape clone() {
+		return new Line(this);
 	}
 
 }

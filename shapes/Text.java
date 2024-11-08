@@ -6,31 +6,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 
-import javax.swing.JOptionPane;
-
 public class Text extends Shape {
 
 	private String text;
 	private Font font;
 
-	/**
-	 * Constructs a new Text shape and asks the user for the text with a dialog
-	 * box
-	 * 
-	 * @param x
-	 *            x-coordinate
-	 * @param y
-	 *            y-coordinate
-	 * @param fontSize
-	 *            font size
-	 */
-	public Text(int x, int y, int fontSize) {
-		super(new Point(x, y));
-		font = new Font(null, Font.PLAIN, fontSize);
-		text = JOptionPane.showInputDialog("Text to be inserted:");
-		if ((text == null) || (text.length() == 0)) {
-			throw new IllegalArgumentException("Empty text");
-		}
+	public Text(Text text) {
+		this(text.point1.x, text.point1.y, text.font.getSize(), text.text);
 	}
 
 	/**
@@ -49,7 +31,6 @@ public class Text extends Shape {
 		super(new Point(x, y));
 		font = new Font(null, Font.PLAIN, fontSize);
 		text = str;
-
 	}
 
 	public void drawShape(Graphics g) {
@@ -69,6 +50,11 @@ public class Text extends Shape {
 	public String toString() {
 		return "text;" + super.toString() + ";" + font.getSize() + ";"
 				+ text.replace(';', '?');
+	}
+
+	@Override
+	public Shape clone() {
+		return new Text(this);
 	}
 
 }

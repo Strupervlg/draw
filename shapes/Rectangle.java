@@ -9,6 +9,10 @@ public class Rectangle extends FillableShape {
 		this.filled = filled;
 	}
 
+	public Rectangle(Rectangle rectangle) {
+		this(rectangle.point1.x, rectangle.point1.y, rectangle.filled);
+	}
+
 	public void drawFilled(Graphics g) {
 		g.fillRect(getPosition().x, getPosition().y, getSize().x, getSize().y);
 	}
@@ -19,6 +23,11 @@ public class Rectangle extends FillableShape {
 
 	public String toString() {
 		return "rect;" + super.toString();
+	}
+
+	@Override
+	public Shape clone() {
+		return new Rectangle(this);
 	}
 
 }

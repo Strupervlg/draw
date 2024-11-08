@@ -1,8 +1,7 @@
 package controller;
 
 import actions.*;
-import events.RepaintActionEvent;
-import events.RepaintActionListener;
+import events.*;
 import gui.DrawGUI;
 
 import java.awt.Color;
@@ -11,9 +10,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import shapes.Drawing;
+import shapes.FillableShape;
 import shapes.Shape;
 
-public class DrawingController {
+public class DrawingController implements ColorChangedActionListener {
 
 	private Drawing drawing;
 	private UndoManager undoManager;
@@ -115,6 +115,16 @@ public class DrawingController {
 	public void addSelectionShape(Shape shape) {
 		this.drawing.getSelection().add(shape);
 		this.fireRepaint();
+		if(shape instanceof FillableShape) {
+			for (FillChangedActionListener listener : fillChangedActionListeners) {
+				((FillableShape) shape).addFillChangedActionListener(listener);
+			}
+		}
+	}
+
+	@Override
+	public void colorChanged(ColorChangedActionEvent event) {
+		this.colorSelectedShapes(event.getColor());
 	}
 
 
@@ -134,5 +144,15 @@ public class DrawingController {
 			RepaintActionEvent event = new RepaintActionEvent(listener);
 			listener.repaint(event);
 		}
+	}
+
+	private ArrayList<FillChangedActionListener> fillChangedActionListeners = new ArrayList<>();
+
+	public void addFillChangedActionListener(FillChangedActionListener listener) {
+		fillChangedActionListeners.add(listener);
+	}
+
+	public void removeFillChangedActionListener(FillChangedActionListener listener) {
+		fillChangedActionListeners.remove(listener);
 	}
 }

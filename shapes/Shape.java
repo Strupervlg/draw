@@ -155,4 +155,10 @@ public abstract class Shape {
 	public Point getPoint2() {
 		return this.point2;
 	}
+
+	public Point getPoint1() {
+		return this.point1;
+	}
+
+	public abstract Shape clone();
 }

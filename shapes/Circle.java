@@ -9,6 +9,10 @@ public class Circle extends FillableShape {
 		this.filled = filled;
 	}
 
+	public Circle(Circle circle) {
+		this(circle.point1.x, circle.point1.y, circle.filled);
+	}
+
 	public void drawFilled(Graphics g) {
 		g.fillOval(getPosition().x, getPosition().y, getSize().x, getSize().y);
 	}
@@ -19,5 +23,10 @@ public class Circle extends FillableShape {
 
 	public String toString() {
 		return "circ;" + super.toString();
+	}
+
+	@Override
+	public Shape clone() {
+		return new Circle(this);
 	}
 }

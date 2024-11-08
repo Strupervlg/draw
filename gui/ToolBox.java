@@ -3,27 +3,14 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.HashMap;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import events.SelectShapeActionEvent;
 import events.SelectShapeActionListener;
@@ -31,114 +18,63 @@ import controller.DrawingController;
 import shapes.FillableShape;
 import shapes.Shape;
 import shapes.Text;
+import tools.*;
 
-public class ToolBox extends JToolBar implements ActionListener,
-		ChangeListener, ItemListener, SelectShapeActionListener {
-
-	class ColorDialog extends JDialog {
-		private static final long serialVersionUID = 0;
-
-		private JColorChooser colorChooser = new JColorChooser();
-		private JButton okButton = new JButton("OK");
-		private JButton cancelButton = new JButton("Cancel");
-
-		public ColorDialog(final ToolBox tb) {
-			setTitle("Color Dialog");
-			setLayout(new BorderLayout());
-			add(colorChooser, BorderLayout.NORTH);
-			JPanel jp = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-			jp.add(okButton);
-			jp.add(cancelButton);
-			add(jp, BorderLayout.SOUTH);
-			pack();
-			setVisible(true);
-			okButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent a) {
-					setVisible(false);
-					tb.setColor(colorChooser.getColor());
-					c.colorSelectedShapes(colorChooser.getColor());
-				}
-			});
-			cancelButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent a) {
-					setVisible(false);
-				}
-			});
-		}
-	}
+public class ToolBox extends JToolBar implements SelectShapeActionListener {
 
 	private static final long serialVersionUID = 1L;
-
-	private boolean fill;
-	private DrawingController c;
+	private DrawingController controller;
 	private ButtonGroup buttons;
-	private JToggleButton select;
-	private JToggleButton line;
-	private JToggleButton rectangle;
-	private JToggleButton circle;
-	private JToggleButton text;
-
-	private JButton colorbutton;
-
-	private JCheckBox fillCheckBox;
-	private JSpinner fontSpinner;
+	private ColorButton colorbutton;
+	private FillCheckBox fillCheckBox;
+	private FontSpinner fontSpinner;
 
 	public Color color;
+	private Tool selectedTool;
 
-	private Tool tool;
+	public static final ToolEnum[] toolNames = new ToolEnum[]{ ToolEnum.SELECT, ToolEnum.LINE, ToolEnum.RECTANGLE, ToolEnum.CIRCLE, ToolEnum.TEXT};
 
-	public ToolBox(DrawingController c) {
+	private HashMap<ToolEnum, Tool> toolsList = new HashMap<>();
+
+	public ToolBox(DrawingController controller) {
 		super("Tools", VERTICAL);
-		this.c = c;
-		tool = Tool.LINE;
+		this.controller = controller;
 		color = Color.BLACK;
-
-		select = new JToggleButton(new ImageIcon("img/cursor.png"));
-		select.setToolTipText("Select and move shapes");
-		line = new JToggleButton(new ImageIcon("img/line.png"));
-		line.setToolTipText("Draw lines");
-		rectangle = new JToggleButton(new ImageIcon("img/rectangle.png"));
-		rectangle.setToolTipText("Draw squares and rectangles");
-		circle = new JToggleButton(new ImageIcon("img/circle.png"));
-		circle.setToolTipText("Draw circles and ellipses");
-		text = new JToggleButton(new ImageIcon("img/text.png"));
-		text.setToolTipText("Create text");
-
-		colorbutton = new JButton("");
-		colorbutton.setPreferredSize(new Dimension(44, 44));
-		colorbutton.setMaximumSize(new Dimension(44, 44));
-		colorbutton.setBackground(Color.BLACK);
-		colorbutton.setForeground(Color.BLACK);
-
-		colorbutton.setToolTipText("Click to change drawing color");
-
-		fillCheckBox = new JCheckBox();
-		fillCheckBox.addItemListener(this);
-
-		fontSpinner = new JSpinner(new SpinnerNumberModel(12, 6, 96, 1));
-		fontSpinner.setPreferredSize(new Dimension(0, 20));
-		fontSpinner.setMaximumSize(new Dimension(0, 20));
-		fontSpinner.setMinimumSize(new Dimension(0, 20));
-		fontSpinner.addChangeListener(this);
-
-		select.addActionListener(this);
-		line.addActionListener(this);
-		rectangle.addActionListener(this);
-		circle.addActionListener(this);
-		colorbutton.addActionListener(this);
-		text.addActionListener(this);
+		makeToolsList();
+		selectedTool = toolsList.get(ToolEnum.SELECT);
+		buttons = new ButtonGroup();
 
 		add(Box.createRigidArea(new Dimension(10, 10)));
 		add(new JLabel("Tools"));
 		add(Box.createRigidArea(new Dimension(10, 10)));
-		add(select);
-		add(line);
-		add(rectangle);
-		add(circle);
-		add(text);
+
+		for(ToolEnum tool : toolNames) {
+			JToggleButton btn = new JToggleButton(toolsList.get(tool).getImageIcon());
+			btn.addActionListener(e -> {
+				if(tool != ToolEnum.SELECT) {
+					controller.clearSelection();
+				}
+				fillCheckBox.setEnabled(toolsList.get(tool).isFillable());
+				setSelectedTool(toolsList.get(tool));
+			});
+			btn.setToolTipText(toolsList.get(tool).getTipText());
+			add(btn);
+			buttons.add(btn);
+		}
+
+		fillCheckBox = new FillCheckBox();
+		fillCheckBox.addActionListener(e -> {
+			controller.toggleFilled();
+		});
+		this.controller.addFillChangedActionListener(fillCheckBox);
+
+		colorbutton = new ColorButton(Color.BLACK);
+		colorbutton.addColorChangedListener(controller);
+
+		fontSpinner = new FontSpinner();
+
 		add(Box.createRigidArea(new Dimension(10, 10)));
 		add(new JLabel("Fill"));
-
 		add(fillCheckBox);
 
 		add(Box.createRigidArea(new Dimension(10, 10)));
@@ -154,86 +90,35 @@ public class ToolBox extends JToolBar implements ActionListener,
 		jp.add(fontSpinner, BorderLayout.NORTH);
 		add(jp);
 
-		buttons = new ButtonGroup();
-		buttons.add(select);
-		buttons.add(line);
-		buttons.add(circle);
-		buttons.add(rectangle);
-		buttons.add(text);
-
 	}
 
-	/**
-	 * Changes the active tool when a button is pressed.
-	 */
-	public void actionPerformed(ActionEvent e) {
-		Object source = e.getSource();
-
-		if (source.equals(select)) {
-			this.setTool(Tool.SELECT);
-		}
-		else if (!source.equals(colorbutton)) {
-			c.clearSelection();
-		}
-
-		if (source.equals(circle)) {
-			this.setTool(Tool.CIRCLE);
-		}
-
-		if (source.equals(line)) {
-			this.setTool(Tool.LINE);
-			fillCheckBox.setEnabled(false);
-		}
-		else {
-			fillCheckBox.setEnabled(true);
-		}
-
-		if (source.equals(rectangle)) {
-			this.setTool(Tool.RECTANGLE);
-		}
-		else if (source.equals(text)) {
-			this.setTool(Tool.TEXT);
-		}
-		else if (source.equals(colorbutton)) {
-			new ColorDialog(this);
-		}
+	public void makeToolsList() {
+		SelectTool selectTool = new SelectTool(controller);
+		selectTool.addSelectShapeActionListener(this);
+		toolsList.put(ToolEnum.SELECT, selectTool);
+		toolsList.put(ToolEnum.LINE, new DrawLineTool(controller, this));
+		toolsList.put(ToolEnum.RECTANGLE, new DrawRectangleTool(controller, this));
+		toolsList.put(ToolEnum.CIRCLE, new DrawCircleTool(controller, this));
+		toolsList.put(ToolEnum.TEXT, new DrawTextTool(controller, this));
 	}
 
 	public Color getColor() {
-		return color;
+		return colorbutton.getSelectedColor();
 	}
 
 	public boolean getFill() {
-		return fill;
+		return fillCheckBox.isFill();
 	}
 
 	public int getFontSize() {
 		return (Integer) fontSpinner.getValue();
 	}
 
-	/**
-	 * Changes the fill status of all Selected Shapes when fill check box is
-	 * clicked.
-	 */
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.DESELECTED) {
-			fill = false;
-		}
-		else {
-			fill = true;
-		}
-
-		c.toggleFilled();
-
-	}
-
-	public void setColor(Color c) {
-		this.color = c;
-		colorbutton.setBackground(color);
+	public void setColor(Color color) {
+		colorbutton.setSelectedColor(color);
 	}
 
 	public void setFill(boolean f) {
-		fill = f;
 		fillCheckBox.setSelected(f);
 	}
 
@@ -241,28 +126,26 @@ public class ToolBox extends JToolBar implements ActionListener,
 		fontSpinner.setValue(size);
 	}
 
-	@Override
-	public void stateChanged(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public Tool getSelectedTool() {
+		return selectedTool;
 	}
 
-	public Tool getTool() {
-		return tool;
-	}
-
-	public void setTool(Tool t) {
-		this.tool = t;
+	public void setSelectedTool(Tool tool) {
+		this.selectedTool = tool;
 	}
 
 	@Override
 	public void selectedShape(SelectShapeActionEvent event) {
 		Shape selectedShape = event.getShape();
 
-		this.setColor(selectedShape.getColor());
+		colorbutton.setSelectedColor(selectedShape.getColor());
 
 		if (selectedShape instanceof FillableShape) {
+			fillCheckBox.setEnabled(true);
 			this.setFill(((FillableShape) selectedShape).getFilled());
+		} else {
+			this.setFill(false);
+			fillCheckBox.setEnabled(false);
 		}
 
 		if (selectedShape instanceof Text) {
