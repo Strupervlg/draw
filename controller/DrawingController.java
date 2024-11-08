@@ -73,6 +73,15 @@ public class DrawingController implements ColorChangedActionListener {
 		}
 	}
 
+	public void endMoveSelectedShapes() {
+		if (!drawing.getSelection().isEmpty()) {
+			DrawAction move = new EndMoveAction();
+			move.execute();
+			undoManager.addAction(move);
+		}
+	}
+
+
 	public void newDrawing(Dimension size) {
 		drawing = new Drawing(size);
 		if (gui != null) {

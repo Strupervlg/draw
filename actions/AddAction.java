@@ -51,4 +51,12 @@ public class AddAction implements DrawAction, MergeAction {
 		}
 		return false;
 	}
+
+	@Override
+	public void setNonMerged() {}
+
+	@Override
+	public boolean canMerge() {
+		return true;
+	}
 }

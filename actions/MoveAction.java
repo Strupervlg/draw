@@ -13,6 +13,8 @@ public class MoveAction implements DrawAction, MergeAction {
 	Selection selected;
 	Point movement;
 
+	boolean isMerged;
+
 	/**
 	 * Creates a MoveAction that moves all Shapes in the given Selection in the
 	 * direction given by the point. The movement is relative to the shapes
@@ -27,6 +29,7 @@ public class MoveAction implements DrawAction, MergeAction {
 	public MoveAction(Selection s, Point m) {
 		this.selected = s.clone();
 		this.movement = m;
+		this.isMerged = true;
 	}
 
 	public void execute() {
@@ -46,13 +49,27 @@ public class MoveAction implements DrawAction, MergeAction {
 	}
 
 	public boolean merge(MergeAction other) {
-		if (other instanceof MoveAction otherCommand) {
+		if (other instanceof MoveAction otherCommand && otherCommand.isMerged && this.isMerged) {
             if (this.selected.equals(otherCommand.selected)) {
 				this.movement.translate(otherCommand.movement.x, otherCommand.movement.y);
 				return true;
 			}
 		}
+		if (other instanceof EndMoveAction) {
+			this.setNonMerged();
+			return true;
+		}
 		return false;
+	}
+
+	@Override
+	public void setNonMerged() {
+		isMerged= false;
+	}
+
+	@Override
+	public boolean canMerge() {
+		return this.isMerged;
 	}
 
 }
