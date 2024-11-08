@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
-import events.RepaintActionEvent;
-import events.RepaintActionListener;
+import events.StateChangedActionEvent;
+import events.StateChangedActionListener;
 import shapes.Drawing;
 import controller.DrawingController;
 
@@ -28,7 +28,7 @@ public class DrawGUI extends JFrame {
 	 * @author Alex Lagerstedt
 	 * 
 	 */
-	public class DrawingContainer extends JPanel implements RepaintActionListener {
+	public class DrawingContainer extends JPanel implements StateChangedActionListener {
 
 		private static final long serialVersionUID = 0;
 
@@ -96,7 +96,7 @@ public class DrawGUI extends JFrame {
 		}
 
 		@Override
-		public void repaint(RepaintActionEvent event) {
+		public void stateChanged(StateChangedActionEvent event) {
 			this.repaint();
 		}
 	}

@@ -2,7 +2,7 @@ package events;
 
 import java.util.EventObject;
 
-public class RepaintActionEvent extends EventObject {
+public class StateChangedActionEvent extends EventObject {
 
     /**
      * Constructs a prototypical Event.
@@ -10,7 +10,7 @@ public class RepaintActionEvent extends EventObject {
      * @param source the object on which the Event initially occurred
      * @throws IllegalArgumentException if source is null
      */
-    public RepaintActionEvent(Object source) {
+    public StateChangedActionEvent(Object source) {
         super(source);
     }
 }

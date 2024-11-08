@@ -29,14 +29,14 @@ public class DrawingController implements ColorChangedActionListener {
 		DrawAction add = new AddAction(drawing, s);
 		add.execute();
 		undoManager.addAction(add);
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void resizeShape(Shape shape, Point point2) {
 		DrawAction add = new ResizeAction(shape, point2);
 		add.execute();
 		undoManager.addAction(add);
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void colorSelectedShapes(Color c) {
@@ -45,7 +45,7 @@ public class DrawingController implements ColorChangedActionListener {
 			col.execute();
 			undoManager.addAction(col);
 		}
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void colorShape(Shape shape, Color color) {
@@ -57,7 +57,7 @@ public class DrawingController implements ColorChangedActionListener {
 		DrawAction del = new DeleteAction(drawing.getSelection());
 		del.execute();
 		undoManager.addAction(del);
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public Drawing getDrawing() {
@@ -69,7 +69,7 @@ public class DrawingController implements ColorChangedActionListener {
 			DrawAction move = new MoveAction(drawing.getSelection(), movement);
 			move.execute();
 			undoManager.addAction(move);
-			this.fireRepaint();
+			this.fireStateChanged();
 		}
 	}
 
@@ -84,37 +84,37 @@ public class DrawingController implements ColorChangedActionListener {
 		if (this.undoManager.canRedo()) {
 			this.undoManager.redo();
 		}
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void selectAll() {
 		drawing.clearSelection();
 		drawing.selectAll();
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void toggleFilled() {
 		DrawAction toggle = new FillAction(drawing.getSelection());
 		toggle.execute();
 		undoManager.addAction(toggle);
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void undo() {
 		if (this.undoManager.canUndo()) {
 			this.undoManager.undo();
 		}
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void clearSelection() {
 		this.drawing.clearSelection();
-		this.fireRepaint();
+		this.fireStateChanged();
 	}
 
 	public void addSelectionShape(Shape shape) {
 		this.drawing.getSelection().add(shape);
-		this.fireRepaint();
+		this.fireStateChanged();
 		if(shape instanceof FillableShape) {
 			for (FillChangedActionListener listener : fillChangedActionListeners) {
 				((FillableShape) shape).addFillChangedActionListener(listener);
@@ -129,20 +129,20 @@ public class DrawingController implements ColorChangedActionListener {
 
 
 	// ------------------------------- EVENTS ---------------------------------
-	private ArrayList<RepaintActionListener> repaintActionListener = new ArrayList<>();
+	private ArrayList<StateChangedActionListener> repaintActionListener = new ArrayList<>();
 
-	public void addRepaintActionListener(RepaintActionListener listener) {
+	public void addRepaintActionListener(StateChangedActionListener listener) {
 		repaintActionListener.add(listener);
 	}
 
-	public void removeRepaintActionListener(RepaintActionListener listener) {
+	public void removeRepaintActionListener(StateChangedActionListener listener) {
 		repaintActionListener.remove(listener);
 	}
 
-	private void fireRepaint() {
-		for(RepaintActionListener listener: repaintActionListener) {
-			RepaintActionEvent event = new RepaintActionEvent(listener);
-			listener.repaint(event);
+	private void fireStateChanged() {
+		for(StateChangedActionListener listener: repaintActionListener) {
+			StateChangedActionEvent event = new StateChangedActionEvent(listener);
+			listener.stateChanged(event);
 		}
 	}
 
