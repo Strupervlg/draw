@@ -1,4 +1,4 @@
-package events;
+package gui.events;
 
 import java.util.EventListener;
 

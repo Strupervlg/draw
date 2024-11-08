@@ -1,8 +1,8 @@
 package tools;
 
 import controller.DrawingController;
-import events.SelectShapeActionEvent;
-import events.SelectShapeActionListener;
+import gui.events.SelectShapeActionEvent;
+import gui.events.SelectShapeActionListener;
 import shapes.Shape;
 
 import javax.swing.*;

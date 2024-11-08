@@ -1,4 +1,4 @@
-package events;
+package gui.events;
 
 import shapes.Shape;
 

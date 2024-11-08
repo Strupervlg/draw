@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import events.SelectShapeActionEvent;
-import events.SelectShapeActionListener;
+import gui.events.SelectShapeActionEvent;
+import gui.events.SelectShapeActionListener;
 import controller.DrawingController;
 import shapes.FillableShape;
 import shapes.Shape;
