@@ -9,6 +9,8 @@ public class Selection implements Iterable<Shape> {
 
 	private ArrayList<Shape> selected;
 
+	private boolean isClone = false;
+
 	public Selection(Drawing drawing) {
 		this.drawing = drawing;
 		selected = new ArrayList<Shape>(0);
@@ -28,7 +30,9 @@ public class Selection implements Iterable<Shape> {
 	@SuppressWarnings("unchecked")
 	public Selection clone() {
 		ArrayList<Shape> clone = (ArrayList<Shape>) selected.clone();
-		return new Selection(clone);
+		Selection cloneSelection = new Selection(clone);
+		cloneSelection.isClone = true;
+		return cloneSelection;
 	}
 
 	public boolean contains(Shape s) {
@@ -96,5 +100,9 @@ public class Selection implements Iterable<Shape> {
 		for (Shape s : selected) {
 			drawing.insertShape(s);
 		}
+	}
+
+	public boolean isClone() {
+		return isClone;
 	}
 }
