@@ -12,15 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import gui.events.SelectShapeActionEvent;
-import gui.events.SelectShapeActionListener;
+import events.*;
 import controller.DrawingController;
 import shapes.FillableShape;
 import shapes.Shape;
 import shapes.Text;
 import tools.*;
 
-public class ToolBox extends JToolBar implements SelectShapeActionListener {
+public class ToolBox extends JToolBar implements SelectShapeActionListener,
+		SelectedManyShapesActionListener, ClearSelectedShapesActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private DrawingController controller;
@@ -28,8 +28,6 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener {
 	private ColorButton colorbutton;
 	private FillCheckBox fillCheckBox;
 	private FontSpinner fontSpinner;
-
-	public Color color;
 	private Tool selectedTool;
 
 	public static final ToolEnum[] toolNames = new ToolEnum[]{ ToolEnum.SELECT, ToolEnum.LINE, ToolEnum.RECTANGLE, ToolEnum.CIRCLE, ToolEnum.TEXT};
@@ -39,7 +37,7 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener {
 	public ToolBox(DrawingController controller) {
 		super("Tools", VERTICAL);
 		this.controller = controller;
-		color = Color.BLACK;
+		this.controller.setToolBox(this);
 		makeToolsList();
 		selectedTool = toolsList.get(ToolEnum.SELECT);
 		buttons = new ButtonGroup();
@@ -93,13 +91,15 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener {
 	}
 
 	public void makeToolsList() {
-		SelectTool selectTool = new SelectTool(controller);
-		selectTool.addSelectShapeActionListener(this);
-		toolsList.put(ToolEnum.SELECT, selectTool);
+		toolsList.put(ToolEnum.SELECT, new SelectTool(controller));
 		toolsList.put(ToolEnum.LINE, new DrawLineTool(controller, this));
 		toolsList.put(ToolEnum.RECTANGLE, new DrawRectangleTool(controller, this));
 		toolsList.put(ToolEnum.CIRCLE, new DrawCircleTool(controller, this));
 		toolsList.put(ToolEnum.TEXT, new DrawTextTool(controller, this));
+	}
+
+	public ColorButton getColorbutton() {
+		return this.colorbutton;
 	}
 
 	public Color getColor() {
@@ -138,18 +138,36 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener {
 	public void selectedShape(SelectShapeActionEvent event) {
 		Shape selectedShape = event.getShape();
 
+		colorbutton.setEnabled(true);
 		colorbutton.setSelectedColor(selectedShape.getColor());
 
 		if (selectedShape instanceof FillableShape) {
 			fillCheckBox.setEnabled(true);
 			this.setFill(((FillableShape) selectedShape).getFilled());
 		} else {
-			this.setFill(false);
 			fillCheckBox.setEnabled(false);
+			this.setFill(false);
 		}
 
 		if (selectedShape instanceof Text) {
+			fontSpinner.setEnabled(true);
 			this.setFontSize(((Text) selectedShape).getFont().getSize());
+		} else {
+			fontSpinner.setEnabled(false);
 		}
+	}
+
+	@Override
+	public void selectedManyShapes(SelectedManyShapesActionEvent event) {
+		fillCheckBox.setEnabled(false);
+		colorbutton.setEnabled(false);
+		fontSpinner.setEnabled(false);
+	}
+
+	@Override
+	public void clearSelectedShapes(ClearSelectedShapesActionEvent event) {
+		fillCheckBox.setEnabled(true);
+		colorbutton.setEnabled(true);
+		fontSpinner.setEnabled(true);
 	}
 }

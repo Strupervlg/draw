@@ -1,15 +1,12 @@
 package tools;
 
 import controller.DrawingController;
-import gui.events.SelectShapeActionEvent;
-import gui.events.SelectShapeActionListener;
 import shapes.Shape;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 public class SelectTool extends Tool {
 
@@ -43,18 +40,7 @@ public class SelectTool extends Tool {
             controller.clearSelection();
         }
 
-        if ((tmp != null) && (!controller.getDrawing().getSelection().contains(tmp))) {
-
-            // empty the selection before selecting a new shape if shift is
-            // not down
-            if(controller.getDrawing().getSelection().isEmpty()) {
-                this.fireSelectedShape(tmp);
-            } else {
-                //TODO испускать событие на множественное выделение,
-                // после чего буду блокироваться fill size и color в toolBox
-            }
-            controller.addSelectionShape(tmp);
-        }
+        controller.addSelectionShape(tmp);
     }
 
     @Override
@@ -74,23 +60,4 @@ public class SelectTool extends Tool {
         return true;
     }
 
-
-    // ------------------------------- EVENTS ---------------------------------
-    private ArrayList<SelectShapeActionListener> selectShapeListListener = new ArrayList<>();
-
-    public void addSelectShapeActionListener(SelectShapeActionListener listener) {
-        selectShapeListListener.add(listener);
-    }
-
-    public void removeSelectShapeActionListener(SelectShapeActionListener listener) {
-        selectShapeListListener.remove(listener);
-    }
-
-    private void fireSelectedShape(Shape shape) {
-        for(SelectShapeActionListener listener: selectShapeListListener) {
-            SelectShapeActionEvent event = new SelectShapeActionEvent(listener);
-            event.setShape(shape);
-            listener.selectedShape(event);
-        }
-    }
 }

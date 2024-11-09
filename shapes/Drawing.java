@@ -1,5 +1,8 @@
 package shapes;
 
+import events.StateChangedActionEvent;
+import events.StateChangedActionListener;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,6 +37,10 @@ public class Drawing implements Iterable<Shape> {
 
 	public void insertShape(Shape s) {
 		shapes.add(s);
+		for(StateChangedActionListener listener: repaintActionListener) {
+			s.addRepaintActionListener(listener);
+		}
+		this.fireStateChanged();
 	}
 
 	@Override
@@ -70,7 +77,11 @@ public class Drawing implements Iterable<Shape> {
 	}
 
 	public void removeShape(Shape s) {
+		for(StateChangedActionListener listener: repaintActionListener) {
+			s.removeRepaintActionListener(listener);
+		}
 		shapes.remove(s);
+		this.fireStateChanged();
 	}
 
 	public Dimension getSize() {
@@ -94,6 +105,28 @@ public class Drawing implements Iterable<Shape> {
 	public void drawShapes(Graphics g) {
 		for (Shape s : shapes) {
 			s.draw(g);
+		}
+	}
+
+
+	// ------------------------------- EVENTS ---------------------------------
+
+	private ArrayList<StateChangedActionListener> repaintActionListener = new ArrayList<>();
+
+	public void addRepaintActionListener(StateChangedActionListener listener) {
+		repaintActionListener.add(listener);
+		selection.addRepaintActionListener(listener);
+	}
+
+	public void removeRepaintActionListener(StateChangedActionListener listener) {
+		repaintActionListener.remove(listener);
+		selection.removeRepaintActionListener(listener);
+	}
+
+	private void fireStateChanged() {
+		for(StateChangedActionListener listener: repaintActionListener) {
+			StateChangedActionEvent event = new StateChangedActionEvent(listener);
+			listener.stateChanged(event);
 		}
 	}
 }

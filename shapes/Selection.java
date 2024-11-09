@@ -1,5 +1,7 @@
 package shapes;
 
+import events.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -21,10 +23,17 @@ public class Selection implements Iterable<Shape> {
 	}
 
 	public void add(Shape s) {
-		if (!selected.contains(s)) {
-			selected.add(s);
-			s.setSelected(true);
+		if (selected.contains(s)) {
+			return;
 		}
+		if(this.drawing.getSelection().isEmpty()) {
+			this.fireSelectedShape(s);
+		} else {
+			this.fireSelectedManyShapes();
+		}
+		selected.add(s);
+		s.setSelected(true);
+		this.fireStateChanged();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -32,6 +41,8 @@ public class Selection implements Iterable<Shape> {
 		ArrayList<Shape> clone = (ArrayList<Shape>) selected.clone();
 		Selection cloneSelection = new Selection(clone);
 		cloneSelection.isClone = true;
+		cloneSelection.drawing = drawing;
+		cloneSelection.clearSelectedShapesActionListeners = clearSelectedShapesActionListeners;
 		return cloneSelection;
 	}
 
@@ -42,8 +53,11 @@ public class Selection implements Iterable<Shape> {
 	public void empty() {
 		for (Shape s : selected) {
 			s.setSelected(false);
+			s.clearAllRepaintActionListener();
 		}
 		selected.clear();
+		this.fireStateChanged();
+		this.fireClearSelectedShapes();
 	}
 
 	public boolean isEmpty() {
@@ -90,10 +104,20 @@ public class Selection implements Iterable<Shape> {
 		}
 	}
 
+	public void toggleFillShapes() {
+		for (Shape s : selected) {
+			if (s instanceof FillableShape) {
+				FillableShape fs = (FillableShape) s;
+				fs.setFilled(!(fs).getFilled());
+			}
+		}
+	}
+
 	public void removeShapesFromDrawing() {
 		for (Shape s : selected) {
 			drawing.removeShape(s);
 		}
+		this.fireClearSelectedShapes();
 	}
 
 	public void insertShapesFromDrawing() {
@@ -104,5 +128,77 @@ public class Selection implements Iterable<Shape> {
 
 	public boolean isClone() {
 		return isClone;
+	}
+
+
+	// ------------------------------- EVENTS ---------------------------------
+
+	private ArrayList<StateChangedActionListener> repaintActionListener = new ArrayList<>();
+
+	public void addRepaintActionListener(StateChangedActionListener listener) {
+		repaintActionListener.add(listener);
+	}
+
+	public void removeRepaintActionListener(StateChangedActionListener listener) {
+		repaintActionListener.remove(listener);
+	}
+
+	private void fireStateChanged() {
+		for(StateChangedActionListener listener: repaintActionListener) {
+			StateChangedActionEvent event = new StateChangedActionEvent(listener);
+			listener.stateChanged(event);
+		}
+	}
+
+	private ArrayList<ClearSelectedShapesActionListener> clearSelectedShapesActionListeners = new ArrayList<>();
+
+	public void addClearSelectedShapesActionListener(ClearSelectedShapesActionListener listener) {
+		clearSelectedShapesActionListeners.add(listener);
+	}
+
+	public void removeClearSelectedShapesActionListener(ClearSelectedShapesActionListener listener) {
+		clearSelectedShapesActionListeners.remove(listener);
+	}
+
+	private void fireClearSelectedShapes() {
+		for(ClearSelectedShapesActionListener listener: clearSelectedShapesActionListeners) {
+			ClearSelectedShapesActionEvent event = new ClearSelectedShapesActionEvent(listener);
+			listener.clearSelectedShapes(event);
+		}
+	}
+
+	private ArrayList<SelectShapeActionListener> selectShapeListListener = new ArrayList<>();
+
+	public void addSelectShapeActionListener(SelectShapeActionListener listener) {
+		selectShapeListListener.add(listener);
+	}
+
+	public void removeSelectShapeActionListener(SelectShapeActionListener listener) {
+		selectShapeListListener.remove(listener);
+	}
+
+	private void fireSelectedShape(Shape shape) {
+		for(SelectShapeActionListener listener: selectShapeListListener) {
+			SelectShapeActionEvent event = new SelectShapeActionEvent(listener);
+			event.setShape(shape);
+			listener.selectedShape(event);
+		}
+	}
+
+	private ArrayList<SelectedManyShapesActionListener> selectedManyShapesActionListeners = new ArrayList<>();
+
+	public void addSelectedManyShapesActionListener(SelectedManyShapesActionListener listener) {
+		selectedManyShapesActionListeners.add(listener);
+	}
+
+	public void removeSelectedManyShapesActionListener(SelectedManyShapesActionListener listener) {
+		selectedManyShapesActionListeners.remove(listener);
+	}
+
+	private void fireSelectedManyShapes() {
+		for(SelectedManyShapesActionListener listener: selectedManyShapesActionListeners) {
+			SelectedManyShapesActionEvent event = new SelectedManyShapesActionEvent(listener);
+			listener.selectedManyShapes(event);
+		}
 	}
 }

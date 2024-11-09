@@ -1,8 +1,6 @@
 package actions;
 
 import shapes.Selection;
-import shapes.FillableShape;
-import shapes.Shape;
 
 /**
  * FillAction implements a undoable action where the fill status of all the
@@ -24,12 +22,7 @@ public class FillAction implements DrawAction {
 	}
 
 	public void execute() {
-		for (Shape s : selected) {
-			if (s instanceof FillableShape) {
-				FillableShape fs = (FillableShape) s;
-				fs.setFilled(!(fs).getFilled());
-			}
-		}
+		selected.toggleFillShapes();
 	}
 
 	public String getDescription() {

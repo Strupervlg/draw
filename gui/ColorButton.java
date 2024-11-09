@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ColorButton extends JButton {
+public class ColorButton extends JButton implements ColorChangedActionListener {
 
     private Color currentColor;
 
@@ -51,6 +51,14 @@ public class ColorButton extends JButton {
             fireColorChanged();
         }
     }
+
+    @Override
+    public void colorChanged(ColorChangedActionEvent event) {
+        this.setSelectedColor(event.getColor(), false);
+    }
+
+
+    // ------------------------------- EVENTS ---------------------------------
 
     private final ArrayList<ColorChangedActionListener> listeners = new ArrayList<>();
 

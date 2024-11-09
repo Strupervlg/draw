@@ -119,6 +119,7 @@ public class DrawGUI extends JFrame {
 	private DrawingController controller;
 	private DrawingContainer drawingContainer;
 	private ToolBox tools;
+	private MainMenu mainMenu;
 	private JScrollPane scrollpane;
 
 	// private StatusBar statusBar;
@@ -144,9 +145,7 @@ public class DrawGUI extends JFrame {
 		scrollpane = new JScrollPane(drawingContainer);
 
 		controller = new DrawingController(this);
-		controller.addRepaintActionListener(drawingContainer);
 		tools = new ToolBox(controller);
-		controller.newDrawing(new Dimension(500, 380));
 
 		// statusBar = new StatusBar();
 
@@ -155,9 +154,12 @@ public class DrawGUI extends JFrame {
 		// getContentPane().add(statusBar, BorderLayout.SOUTH);
 
 		MenuListener mainMenuListener = new MenuListener(controller, drawingContainer);
-		JMenuBar mainMenu = new MainMenu(mainMenuListener);
+		mainMenu = new MainMenu(mainMenuListener);
+		controller.getUndoManager().addUndoStackChangedActionListener(mainMenu);
+		controller.getUndoManager().addRedoStackChangedActionListener(mainMenu);
 		this.setJMenuBar(mainMenu);
 
+		controller.newDrawing(new Dimension(500, 380));
 		pack();
 		setVisible(true);
 
@@ -170,6 +172,17 @@ public class DrawGUI extends JFrame {
 	public void updateDrawing() {
 
 		drawingContainer.setDrawing(controller.getDrawing());
+		controller.getDrawing().addRepaintActionListener(drawingContainer);
+
+		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(tools);
+		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(mainMenu);
+
+		controller.getDrawing().getSelection().addSelectShapeActionListener(tools);
+		controller.getDrawing().getSelection().addSelectShapeActionListener(mainMenu);
+
+		controller.getDrawing().getSelection().addSelectedManyShapesActionListener(tools);
+		controller.getDrawing().getSelection().addSelectedManyShapesActionListener(mainMenu);
+
 		scrollpane.setPreferredSize(new Dimension(drawingContainer
 				.getPreferredSize().width + 100, drawingContainer
 				.getPreferredSize().height + 100));

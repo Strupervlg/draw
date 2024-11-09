@@ -49,11 +49,15 @@ public abstract class FillableShape extends Shape {
 	public void setFilled(boolean f) {
 		filled = f;
 		this.fireFillChanged(f);
+		this.fireStateChanged();
 	}
 
 	public String toString() {
 		return super.toString() + ";" + (filled ? 1 : 0);
 	}
+
+
+	// ------------------------------- EVENTS ---------------------------------
 
 	private ArrayList<FillChangedActionListener> fillChangedActionListeners = new ArrayList<>();
 

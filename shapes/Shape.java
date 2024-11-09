@@ -1,10 +1,16 @@
 package shapes;
 
+import events.ColorChangedActionEvent;
+import events.ColorChangedActionListener;
+import events.StateChangedActionEvent;
+import events.StateChangedActionListener;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.ArrayList;
 
 public abstract class Shape {
 
@@ -112,10 +118,13 @@ public abstract class Shape {
 		point1.y = point1.y + y;
 		point2.x = point2.x + x;
 		point2.y = point2.y + y;
+		this.fireStateChanged();
 	}
 
 	public void setColor(Color c) {
 		color = c;
+		this.fireStateChanged();
+		this.fireColorChanged(c);
 	}
 
 	public void setPoint1(Point p) {
@@ -124,6 +133,7 @@ public abstract class Shape {
 
 	public void setPoint2(Point p) {
 		this.point2 = p;
+		this.fireStateChanged();
 	}
 
 	public void setSelected(boolean b) {
@@ -161,4 +171,46 @@ public abstract class Shape {
 	}
 
 	public abstract Shape clone();
+
+
+	// ------------------------------- EVENTS ---------------------------------
+
+	private ArrayList<StateChangedActionListener> repaintActionListener = new ArrayList<>();
+
+	public void addRepaintActionListener(StateChangedActionListener listener) {
+		repaintActionListener.add(listener);
+	}
+
+	public void removeRepaintActionListener(StateChangedActionListener listener) {
+		repaintActionListener.remove(listener);
+	}
+
+	protected void fireStateChanged() {
+		for(StateChangedActionListener listener: repaintActionListener) {
+			StateChangedActionEvent event = new StateChangedActionEvent(listener);
+			listener.stateChanged(event);
+		}
+	}
+
+	private final ArrayList<ColorChangedActionListener> colorChangedActionListeners = new ArrayList<>();
+
+	public void addColorChangedListener(ColorChangedActionListener listener) {
+		colorChangedActionListeners.add(listener);
+	}
+
+	public void removeRepaintActionListener(ColorChangedActionListener listener) {
+		colorChangedActionListeners.remove(listener);
+	}
+
+	public void clearAllRepaintActionListener() {
+		colorChangedActionListeners.clear();
+	}
+
+	private void fireColorChanged(Color color) {
+		for(ColorChangedActionListener listener: colorChangedActionListeners) {
+			ColorChangedActionEvent event = new ColorChangedActionEvent(listener);
+			event.setColor(color);
+			listener.colorChanged(event);
+		}
+	}
 }

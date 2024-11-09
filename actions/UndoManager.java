@@ -1,5 +1,8 @@
 package actions;
 
+import events.*;
+
+import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -47,6 +50,8 @@ public class UndoManager {
 			}
 		}
 		this.undoStack.push(action);
+		this.fireRedoStackChanged();
+		this.fireUndoStackChanged();
 	}
 
 	/**
@@ -76,6 +81,8 @@ public class UndoManager {
 		DrawAction action = this.redoStack.pop();
 		action.redo();
 		this.undoStack.push(action);
+		this.fireRedoStackChanged();
+		this.fireUndoStackChanged();
 	}
 
 	/**
@@ -86,6 +93,46 @@ public class UndoManager {
 		DrawAction action = this.undoStack.pop();
 		action.undo();
 		this.redoStack.push(action);
+		this.fireRedoStackChanged();
+		this.fireUndoStackChanged();
 	}
 
+
+	// ------------------------------- EVENTS ---------------------------------
+
+	private ArrayList<RedoStackChangedActionListener> changedRedoStackActionListeners = new ArrayList<>();
+
+	public void addRedoStackChangedActionListener(RedoStackChangedActionListener listener) {
+		changedRedoStackActionListeners.add(listener);
+	}
+
+	public void removeRedoStackChangedActionListener(RedoStackChangedActionListener listener) {
+		changedRedoStackActionListeners.remove(listener);
+	}
+
+	private void fireRedoStackChanged() {
+		for(RedoStackChangedActionListener listener: changedRedoStackActionListeners) {
+			RedoStackChangedActionEvent event = new RedoStackChangedActionEvent(listener);
+			event.setCanRedo(this.canRedo());
+			listener.redoStackChanged(event);
+		}
+	}
+
+	private ArrayList<UndoStackChangedActionListener> undoStackChangedActionListeners = new ArrayList<>();
+
+	public void addUndoStackChangedActionListener(UndoStackChangedActionListener listener) {
+		undoStackChangedActionListeners.add(listener);
+	}
+
+	public void removeUndoStackChangedActionListener(UndoStackChangedActionListener listener) {
+		undoStackChangedActionListeners.remove(listener);
+	}
+
+	private void fireUndoStackChanged() {
+		for(UndoStackChangedActionListener listener: undoStackChangedActionListeners) {
+			UndoStackChangedActionEvent event = new UndoStackChangedActionEvent(listener);
+			event.setCanUndo(this.canUndo());
+			listener.undoStackChanged(event);
+		}
+	}
 }
