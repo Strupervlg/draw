@@ -1,7 +1,6 @@
 package shapes;
 
-import events.StateChangedActionEvent;
-import events.StateChangedActionListener;
+import events.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,10 +34,11 @@ public class Drawing implements Iterable<Shape> {
 
 	}
 
-	public void insertShape(Shape s) {
-		shapes.add(s);
+	public void insertShape(Shape shape) {
+		shapes.add(shape);
+		this.fireShapeIsInserted(shape);
 		for(StateChangedActionListener listener: repaintActionListener) {
-			s.addRepaintActionListener(listener);
+			shape.addRepaintActionListener(listener);
 		}
 		this.fireStateChanged();
 	}
@@ -76,11 +76,12 @@ public class Drawing implements Iterable<Shape> {
 		}
 	}
 
-	public void removeShape(Shape s) {
+	public void removeShape(Shape shape) {
 		for(StateChangedActionListener listener: repaintActionListener) {
-			s.removeRepaintActionListener(listener);
+			shape.removeRepaintActionListener(listener);
 		}
-		shapes.remove(s);
+		this.fireShapeIsDeleted(shape);
+		shapes.remove(shape);
 		this.fireStateChanged();
 	}
 
@@ -99,12 +100,6 @@ public class Drawing implements Iterable<Shape> {
 	public void selectAll() {
 		for (Shape sh : shapes) {
 			selection.add(sh);
-		}
-	}
-
-	public void drawShapes(Graphics g) {
-		for (Shape s : shapes) {
-			s.draw(g);
 		}
 	}
 
@@ -127,6 +122,42 @@ public class Drawing implements Iterable<Shape> {
 		for(StateChangedActionListener listener: repaintActionListener) {
 			StateChangedActionEvent event = new StateChangedActionEvent(listener);
 			listener.stateChanged(event);
+		}
+	}
+
+	private ArrayList<ShapeIsInsertedActionListener> shapeIsInsertedActionListeners = new ArrayList<>();
+
+	public void addShapeIsInsertedActionListener(ShapeIsInsertedActionListener listener) {
+		shapeIsInsertedActionListeners.add(listener);
+	}
+
+	public void removeShapeIsInsertedActionListener(ShapeIsInsertedActionListener listener) {
+		shapeIsInsertedActionListeners.remove(listener);
+	}
+
+	private void fireShapeIsInserted(Shape shape) {
+		for(ShapeIsInsertedActionListener listener: shapeIsInsertedActionListeners) {
+			ShapeIsInsertedActionEvent event = new ShapeIsInsertedActionEvent(listener);
+			event.setShape(shape);
+			listener.shapeIsInserted(event);
+		}
+	}
+
+	private ArrayList<ShapeIsDeletedActionListener> shapeIsDeletedActionListeners = new ArrayList<>();
+
+	public void addShapeIsDeletedActionListener(ShapeIsDeletedActionListener listener) {
+		shapeIsDeletedActionListeners.add(listener);
+	}
+
+	public void removeShapeIsDeletedActionListener(ShapeIsDeletedActionListener listener) {
+		shapeIsDeletedActionListeners.remove(listener);
+	}
+
+	private void fireShapeIsDeleted(Shape shape) {
+		for(ShapeIsDeletedActionListener listener: shapeIsDeletedActionListeners) {
+			ShapeIsDeletedActionEvent event = new ShapeIsDeletedActionEvent(listener);
+			event.setShape(shape);
+			listener.shapeIsDeleted(event);
 		}
 	}
 }

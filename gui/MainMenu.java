@@ -2,7 +2,7 @@ package gui;
 
 import events.*;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -28,7 +28,8 @@ import javax.swing.SpinnerNumberModel;
  */
 public class MainMenu extends JMenuBar implements ClearSelectedShapesActionListener,
 		SelectedManyShapesActionListener, SelectShapeActionListener,
-		RedoStackChangedActionListener, UndoStackChangedActionListener {
+		RedoStackChangedActionListener, UndoStackChangedActionListener,
+		ShapeIsDeletedActionListener {
 
 	@Override
 	public void clearSelectedShapes(ClearSelectedShapesActionEvent event) {
@@ -56,6 +57,12 @@ public class MainMenu extends JMenuBar implements ClearSelectedShapesActionListe
 	@Override
 	public void undoStackChanged(UndoStackChangedActionEvent event) {
 		undo.setEnabled(event.canUndo());
+	}
+
+	@Override
+	public void shapeIsDeleted(ShapeIsDeletedActionEvent event) {
+		clear.setEnabled(false);
+		delete.setEnabled(false);
 	}
 
 	/**

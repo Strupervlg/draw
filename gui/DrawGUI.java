@@ -1,14 +1,9 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
-import events.StateChangedActionEvent;
-import events.StateChangedActionListener;
 import shapes.Drawing;
 import controller.DrawingController;
 
@@ -28,76 +23,32 @@ public class DrawGUI extends JFrame {
 	 * @author Alex Lagerstedt
 	 * 
 	 */
-	public class DrawingContainer extends JPanel implements StateChangedActionListener {
+	public class DrawingContainer extends JPanel {
 
 		private static final long serialVersionUID = 0;
 
-		private Drawing drawing;
+		private DrawingCanvas drawingCanvas;
 
 		public DrawingContainer() {
 			super(new GridBagLayout());
 		}
 
-		public void setDrawing(Drawing d) {
+		public void setDrawing(Drawing drawing) {
 			this.removeAll();
-			for(java.awt.event.MouseListener listener : this.getMouseListeners()) {
-				this.removeMouseListener(listener);
-			}
 
-			for(java.awt.event.MouseMotionListener listener : this.getMouseMotionListeners()) {
-				this.removeMouseMotionListener(listener);
-			}
+			drawingCanvas = new DrawingCanvas(drawing, tools);
+			this.add(drawingCanvas);
+			drawing.addRepaintActionListener(drawingCanvas);
+			drawing.addShapeIsInsertedActionListener(drawingCanvas);
+			drawing.addShapeIsDeletedActionListener(drawingCanvas);
+			drawing.addShapeIsDeletedActionListener(mainMenu);
+			setPreferredSize(drawingCanvas.getPreferredSize());
 
-			drawing = d;
-
-			addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(MouseEvent e) {
-					super.mousePressed(e);
-					tools.getSelectedTool().mousePressed(e);
-				}
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					super.mouseReleased(e);
-					tools.getSelectedTool().mouseReleased(e);
-				}
-			});
-
-			addMouseMotionListener(new MouseAdapter() {
-				@Override
-				public void mouseMoved(MouseEvent e) {
-					super.mouseMoved(e);
-					tools.getSelectedTool().mouseMoved(e);
-				}
-				@Override
-				public void mouseDragged(MouseEvent e){
-					super.mouseDragged(e);
-					tools.getSelectedTool().mouseDragged(e);
-				}
-			});
-
-			setBorder(BorderFactory.createLineBorder(Color.black));
-			setBackground(Color.WHITE);
-			setPreferredSize(d.getSize());
 			pack();
 		}
 
-		public BufferedImage getImage() {
-			BufferedImage bi = new BufferedImage(getPreferredSize().width,
-					getPreferredSize().height, BufferedImage.TYPE_INT_RGB);
-			Graphics g = bi.createGraphics();
-			this.print(g);
-			return bi;
-		}
-
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			drawing.drawShapes(g);
-		}
-
-		@Override
-		public void stateChanged(StateChangedActionEvent event) {
-			this.repaint();
+		public DrawingCanvas getDrawingCanvas() {
+			return drawingCanvas;
 		}
 	}
 
@@ -172,7 +123,6 @@ public class DrawGUI extends JFrame {
 	public void updateDrawing() {
 
 		drawingContainer.setDrawing(controller.getDrawing());
-		controller.getDrawing().addRepaintActionListener(drawingContainer);
 
 		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(tools);
 		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(mainMenu);

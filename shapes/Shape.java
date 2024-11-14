@@ -5,18 +5,13 @@ import events.ColorChangedActionListener;
 import events.StateChangedActionEvent;
 import events.StateChangedActionListener;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 
 public abstract class Shape {
 
 	private static final Color DEFAULT_COLOR = Color.BLACK;
-
-	private static final double DEFAULT_STROKE_WIDTH = 2;
 
 	private static final int DEFAULT_WIDTH = 25;
 
@@ -26,7 +21,6 @@ public abstract class Shape {
 	protected Point point2;
 
 	protected Color color;
-	protected double strokeWidth;
 	protected boolean selected;
 
 	public Shape(Point p) {
@@ -34,52 +28,7 @@ public abstract class Shape {
 		point2 = new Point(p.x + DEFAULT_WIDTH, p.y + DEFAULT_HEIGHT);
 		color = DEFAULT_COLOR;
 		selected = false;
-		strokeWidth = DEFAULT_STROKE_WIDTH;
 	}
-
-	public void draw(Graphics g) {
-		g.setColor(color);
-		drawShape(g);
-		if (selected) {
-			drawSelectionIndicator(g);
-		}
-	}
-
-	public void drawSelectionIndicator(Graphics g) {
-
-		((Graphics2D) g).setStroke(new BasicStroke((float) 1.0));
-		g.setColor(new Color(255, 0, 255));
-
-		int len = 10;
-		int off = 5;
-
-		Point p1 = getPosition();
-		Point p2 = new Point(getPosition().x + getSize().x, getPosition().y
-				+ getSize().y);
-
-		g.drawPolyline(
-				// left up
-				new int[] { p1.x - off, p1.x - off, p1.x - off + len },
-				new int[] { p1.y - off + len, p1.y - off, p1.y - off }, 3);
-
-		g.drawPolyline(
-				// right down
-				new int[] { p2.x + off - len, p2.x + off, p2.x + off },
-				new int[] { p2.y + off, p2.y + off, p2.y + off - len }, 3);
-
-		g.drawPolyline(
-				// right up
-				new int[] { p2.x + off - len, p2.x + off, p2.x + off },
-				new int[] { p1.y - off, p1.y - off, p1.y - off + len }, 3);
-
-		g.drawPolyline(
-				// left down
-				new int[] { p1.x - off, p1.x - off, p1.x - off + len },
-				new int[] { p2.y + off - len, p2.y + off, p2.y + off }, 3);
-
-	}
-
-	public abstract void drawShape(Graphics g);
 
 	public Color getColor() {
 		return color;
@@ -136,6 +85,10 @@ public abstract class Shape {
 		this.fireStateChanged();
 	}
 
+	public boolean getSelected() {
+		return selected;
+	}
+
 	public void setSelected(boolean b) {
 		selected = b;
 	}
@@ -156,8 +109,7 @@ public abstract class Shape {
 			return this.point1.equals(otherShape.point1)
 					&& this.point2.equals(otherShape.point2)
 					&& this.selected == otherShape.selected
-					&& this.color.equals(otherShape.color)
-					&& this.strokeWidth == otherShape.strokeWidth;
+					&& this.color.equals(otherShape.color);
 		}
 		return super.equals(obj);
 	}

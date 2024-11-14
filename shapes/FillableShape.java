@@ -3,9 +3,6 @@ package shapes;
 import events.FillChangedActionEvent;
 import events.FillChangedActionListener;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -24,22 +21,6 @@ public abstract class FillableShape extends Shape {
 			this.clearFillChangedActionListener();
 		}
 		super.setSelected(b);
-	}
-
-	public abstract void drawFilled(Graphics g);
-
-	public abstract void drawNonFilled(Graphics g);
-
-	public void drawShape(Graphics g) {
-
-		((Graphics2D) g).setStroke(new BasicStroke((float) strokeWidth));
-
-		if (filled) {
-			drawFilled(g);
-		}
-		else {
-			drawNonFilled(g);
-		}
 	}
 
 	public boolean getFilled() {

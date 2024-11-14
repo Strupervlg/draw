@@ -1,10 +1,7 @@
 package shapes;
 
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 
 public class Text extends Shape {
 
@@ -33,16 +30,6 @@ public class Text extends Shape {
 		text = str;
 	}
 
-	public void drawShape(Graphics g) {
-
-		g.setFont(font);
-		int w = g.getFontMetrics().stringWidth(text);
-		setPoint2(new Point(point1.x + w, point1.y - font.getSize()));
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString(text, point1.x, point1.y);
-	}
-
 	public Font getFont() {
 		return font;
 	}
@@ -50,6 +37,10 @@ public class Text extends Shape {
 	public String toString() {
 		return "text;" + super.toString() + ";" + font.getSize() + ";"
 				+ text.replace(';', '?');
+	}
+
+	public String getText() {
+		return text;
 	}
 
 	@Override

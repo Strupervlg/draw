@@ -14,15 +14,15 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import gui.DrawGUI;
+import gui.DrawingCanvas;
 import shapes.*;
 
 public class DrawIO {
 
-	public void export(File f, DrawingController c, DrawGUI.DrawingContainer drawingContainer) {
+	public void export(File f, DrawingController c, DrawingCanvas drawingCanvas) {
 		try {
 			c.getDrawing().clearSelection();
-			BufferedImage bi = drawingContainer.getImage(); // retrieve image
+			BufferedImage bi = drawingCanvas.getImage(); // retrieve image
 			ImageIO.write(bi, "png", f);
 		}
 		catch (IOException e) {
