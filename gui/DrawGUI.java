@@ -110,7 +110,7 @@ public class DrawGUI extends JFrame {
 		controller.getUndoManager().addRedoStackChangedActionListener(mainMenu);
 		this.setJMenuBar(mainMenu);
 
-		controller.newDrawing(new Dimension(500, 380));
+		this.updateDrawing();
 		pack();
 		setVisible(true);
 

@@ -23,7 +23,7 @@ public class DrawingController implements ColorChangedActionListener {
 	private ToolBox toolBox;
 
 	public DrawingController(DrawGUI g) {
-		drawing = null;
+		drawing = new Drawing(new Dimension(500, 380));
 		undoManager = new UndoManager();
 		gui = g;
 	}

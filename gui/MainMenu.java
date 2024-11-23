@@ -162,8 +162,6 @@ public class MainMenu extends JMenuBar implements ClearSelectedShapesActionListe
 				"img/document-new.png"));
 		JMenuItem open = new JMenuItem("Open", new ImageIcon(
 				"img/document-open.png"));
-		// JMenuItem save = new JMenuItem("Save", new ImageIcon(
-		// "img/document-save.png"));
 		JMenuItem saveas = new JMenuItem("Save as", new ImageIcon(
 				"img/document-save-as.png"));
 		JMenuItem export = new JMenuItem("Export PNG", new ImageIcon(
