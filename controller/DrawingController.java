@@ -142,6 +142,10 @@ public class DrawingController implements ColorChangedActionListener {
 		this.toolBox = toolBox;
 	}
 
+	public ToolBox getToolBox() {
+		return this.toolBox;
+	}
+
 
 	// ------------------------------- EVENTS ---------------------------------
 

@@ -1,14 +1,14 @@
-package gui.shapes;
+package tools;
 
 import shapes.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GraphicShapeFactory {
-    private Map<Shape, GraphicShape> shapes = new HashMap<>();
+public class DrawShapeToolFactory {
+    private Map<Shape, DrawShapeTool> shapes = new HashMap<>();
 
-    public GraphicShape create(Shape shape) {
+    public DrawShapeTool create(Shape shape) {
         if(shapes.containsKey(shape)) {
             return shapes.get(shape);
         }
@@ -22,43 +22,43 @@ public class GraphicShapeFactory {
         };
     }
 
-    public GraphicCircle create(Circle circle) {
+    public DrawCircleTool create(Circle circle) {
         if(shapes.containsKey(circle)) {
-            return (GraphicCircle) shapes.get(circle);
+            return (DrawCircleTool) shapes.get(circle);
         }
-        GraphicCircle graphicCircle = new GraphicCircle(circle);
+        DrawCircleTool graphicCircle = new DrawCircleTool(circle);
         shapes.put(circle, graphicCircle);
         return graphicCircle;
     }
 
-    public GraphicLine create(Line line) {
+    public DrawLineTool create(Line line) {
         if(shapes.containsKey(line)) {
-            return (GraphicLine) shapes.get(line);
+            return (DrawLineTool) shapes.get(line);
         }
-        GraphicLine graphicLine = new GraphicLine(line);
+        DrawLineTool graphicLine = new DrawLineTool(line);
         shapes.put(line, graphicLine);
         return graphicLine;
     }
 
-    public GraphicRectangle create(Rectangle rectangle) {
+    public DrawRectangleTool create(Rectangle rectangle) {
         if(shapes.containsKey(rectangle)) {
-            return (GraphicRectangle) shapes.get(rectangle);
+            return (DrawRectangleTool) shapes.get(rectangle);
         }
-        GraphicRectangle graphicRectangle = new GraphicRectangle(rectangle);
+        DrawRectangleTool graphicRectangle = new DrawRectangleTool(rectangle);
         shapes.put(rectangle, graphicRectangle);
         return graphicRectangle;
     }
 
-    public GraphicText create(Text text) {
+    public DrawTextTool create(Text text) {
         if(shapes.containsKey(text)) {
-            return (GraphicText) shapes.get(text);
+            return (DrawTextTool) shapes.get(text);
         }
-        GraphicText graphicText = new GraphicText(text);
+        DrawTextTool graphicText = new DrawTextTool(text);
         shapes.put(text, graphicText);
         return graphicText;
     }
 
-    public GraphicShape getGraphicShape(Shape shape) {
+    public DrawShapeTool getGraphicShape(Shape shape) {
         return shapes.get(shape);
     }
 

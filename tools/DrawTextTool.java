@@ -1,27 +1,16 @@
 package tools;
 
 import controller.DrawingController;
-import gui.ToolBox;
-import shapes.Shape;
 import shapes.Text;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawTextTool extends Tool {
+public class DrawTextTool extends DrawShapeTool {
 
-    private DrawingController controller;
-
-    private ToolBox tools;
-
-    private Shape newShape;
-
-    public DrawTextTool(DrawingController controller, ToolBox tools) {
-        this.imageIcon = new ImageIcon("img/text.png");
-        this.tipText = "Create text";
-        this.controller = controller;
-        this.tools = tools;
+    public DrawTextTool(DrawingController controller) {
+        super(controller, new ImageIcon("img/text.png"), "Create text");
     }
 
     @Override
@@ -35,10 +24,10 @@ public class DrawTextTool extends Tool {
             if (text == null || text.isEmpty()) {
                 throw new IllegalArgumentException("Empty text");
             }
-            newShape = new Text(position.x, position.y, tools.getFontSize(), text);
-            controller.colorShape(newShape, tools.getColor());
-            controller.addShape(newShape);
-            newShape = null;
+            shape = new Text(position.x, position.y, controller.getToolBox().getFontSize(), text);
+            controller.colorShape(shape, controller.getToolBox().getColor());
+            controller.addShape(shape);
+            shape = null;
         }
         catch (IllegalArgumentException exception) {
         }
@@ -52,8 +41,17 @@ public class DrawTextTool extends Tool {
 
     }
 
+    public DrawTextTool(Text text) {
+        super(text);
+    }
+
     @Override
-    public boolean isFillable() {
-        return false;
+    public void drawShape(Graphics g) {
+        g.setFont(((Text)shape).getFont());
+        int w = g.getFontMetrics().stringWidth(((Text)shape).getText());
+        shape.setPoint2(new Point(shape.getPoint1().x + w, shape.getPoint1().y - ((Text)shape).getFont().getSize()));
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.drawString(((Text)shape).getText(), shape.getPoint1().x, shape.getPoint1().y);
     }
 }

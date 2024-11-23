@@ -1,15 +1,25 @@
 package tools;
 
+import controller.DrawingController;
+
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 public abstract class Tool {
 
-    protected ImageIcon imageIcon;
+    protected DrawingController controller;
 
-    protected String tipText;
+    private ImageIcon imageIcon;
+
+    private String tipText;
 
     public Tool(){}
+
+    public Tool(DrawingController controller, ImageIcon imageIcon, String tipText) {
+        this.controller = controller;
+        this.imageIcon = imageIcon;
+        this.tipText = tipText;
+    }
 
     public abstract void mouseDragged(MouseEvent e);
 
@@ -23,17 +33,7 @@ public abstract class Tool {
         return imageIcon;
     }
 
-    public void setImageIcon(ImageIcon imageIcon) {
-        this.imageIcon = imageIcon;
-    }
-
     public String getTipText() {
         return tipText;
     }
-
-    public void setTipText(String tipText) {
-        this.tipText = tipText;
-    }
-
-    public abstract boolean isFillable();
 }

@@ -1,45 +1,34 @@
 package tools;
 
 import controller.DrawingController;
-import gui.ToolBox;
 import shapes.Rectangle;
-import shapes.Shape;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawRectangleTool extends Tool {
+public class DrawRectangleTool extends DrawFillableShapeTool {
 
-    private DrawingController controller;
-
-    private ToolBox tools;
-
-    private Shape newShape;
-
-    public DrawRectangleTool(DrawingController controller, ToolBox tools) {
-        this.imageIcon = new ImageIcon("img/rectangle.png");
-        this.tipText = "Draw squares and rectangles";
-        this.controller = controller;
-        this.tools = tools;
+    public DrawRectangleTool(DrawingController controller) {
+        super(controller, new ImageIcon("img/rectangle.png"), "Draw squares and rectangles");
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        controller.resizeShape(newShape, e.getPoint());
+        controller.resizeShape(shape, e.getPoint());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        newShape = new Rectangle(position.x, position.y, tools.getFill());
-        controller.colorShape(newShape, tools.getColor());
-        controller.addShape(newShape);
+        shape = new Rectangle(position.x, position.y, controller.getToolBox().getFill());
+        controller.colorShape(shape, controller.getToolBox().getColor());
+        controller.addShape(shape);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        newShape = null;
+        shape = null;
     }
 
     @Override
@@ -47,8 +36,17 @@ public class DrawRectangleTool extends Tool {
 
     }
 
+    public DrawRectangleTool(Rectangle rectangle) {
+        super(rectangle);
+    }
+
     @Override
-    public boolean isFillable() {
-        return true;
+    public void drawFilled(Graphics g) {
+        g.fillRect(shape.getPosition().x, shape.getPosition().y, shape.getSize().x, shape.getSize().y);
+    }
+
+    @Override
+    public void drawNonFilled(Graphics g) {
+        g.drawRect(shape.getPosition().x, shape.getPosition().y, shape.getSize().x, shape.getSize().y);
     }
 }

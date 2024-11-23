@@ -52,7 +52,7 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener,
 				if(tool != ToolEnum.SELECT) {
 					controller.clearSelection();
 				}
-				fillCheckBox.setEnabled(toolsList.get(tool).isFillable());
+				fillCheckBox.setEnabled(toolsList.get(tool) instanceof DrawFillableShapeTool);
 				setSelectedTool(toolsList.get(tool));
 			});
 			btn.setToolTipText(toolsList.get(tool).getTipText());
@@ -92,10 +92,10 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener,
 
 	public void makeToolsList() {
 		toolsList.put(ToolEnum.SELECT, new SelectTool(controller));
-		toolsList.put(ToolEnum.LINE, new DrawLineTool(controller, this));
-		toolsList.put(ToolEnum.RECTANGLE, new DrawRectangleTool(controller, this));
-		toolsList.put(ToolEnum.CIRCLE, new DrawCircleTool(controller, this));
-		toolsList.put(ToolEnum.TEXT, new DrawTextTool(controller, this));
+		toolsList.put(ToolEnum.LINE, new DrawLineTool(controller));
+		toolsList.put(ToolEnum.RECTANGLE, new DrawRectangleTool(controller));
+		toolsList.put(ToolEnum.CIRCLE, new DrawCircleTool(controller));
+		toolsList.put(ToolEnum.TEXT, new DrawTextTool(controller));
 	}
 
 	public ColorButton getColorbutton() {

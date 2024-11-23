@@ -1,45 +1,34 @@
 package tools;
 
 import controller.DrawingController;
-import gui.ToolBox;
 import shapes.Circle;
-import shapes.Shape;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawCircleTool extends Tool {
+public class DrawCircleTool extends DrawFillableShapeTool {
 
-    private DrawingController controller;
-
-    private ToolBox tools;
-
-    private Shape newShape;
-
-    public DrawCircleTool(DrawingController controller, ToolBox tools) {
-        this.imageIcon = new ImageIcon("img/circle.png");
-        this.tipText = "Draw circles and ellipses";
-        this.controller = controller;
-        this.tools = tools;
+    public DrawCircleTool(DrawingController controller) {
+        super(controller, new ImageIcon("img/circle.png"), "Draw circles and ellipses");
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        controller.resizeShape(newShape, e.getPoint());
+        controller.resizeShape(shape, e.getPoint());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        newShape = new Circle(position.x, position.y, tools.getFill());
-        controller.colorShape(newShape, tools.getColor());
-        controller.addShape(newShape);
+        shape = new Circle(position.x, position.y, controller.getToolBox().getFill());
+        controller.colorShape(shape, controller.getToolBox().getColor());
+        controller.addShape(shape);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        newShape = null;
+        shape = null;
     }
 
     @Override
@@ -47,8 +36,17 @@ public class DrawCircleTool extends Tool {
 
     }
 
+    public DrawCircleTool(Circle circle) {
+        super(circle);
+    }
+
     @Override
-    public boolean isFillable() {
-        return true;
+    public void drawFilled(Graphics g) {
+        g.fillOval(shape.getPosition().x, shape.getPosition().y, shape.getSize().x, shape.getSize().y);
+    }
+
+    @Override
+    public void drawNonFilled(Graphics g) {
+        g.drawOval(shape.getPosition().x, shape.getPosition().y, shape.getSize().x, shape.getSize().y);
     }
 }

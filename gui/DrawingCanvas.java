@@ -1,10 +1,10 @@
 package gui;
 
 import events.*;
-import gui.shapes.GraphicShape;
-import gui.shapes.GraphicShapeFactory;
+import tools.DrawShapeToolFactory;
 import shapes.Drawing;
 import shapes.Shape;
+import tools.DrawShapeTool;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,12 +18,12 @@ public class DrawingCanvas extends JPanel implements StateChangedActionListener,
 
     private static final long serialVersionUID = 0;
 
-    private ArrayList<GraphicShape> graphicShapes;
+    private ArrayList<DrawShapeTool> graphicShapes;
 
-    private GraphicShapeFactory graphicShapeFactory;
+    private DrawShapeToolFactory graphicShapeFactory;
 
     public DrawingCanvas(Drawing drawing, ToolBox toolBox) {
-        graphicShapes = new ArrayList<GraphicShape>(0);
+        graphicShapes = new ArrayList<DrawShapeTool>(0);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -50,7 +50,7 @@ public class DrawingCanvas extends JPanel implements StateChangedActionListener,
             }
         });
 
-        graphicShapeFactory = new GraphicShapeFactory();
+        graphicShapeFactory = new DrawShapeToolFactory();
 
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.WHITE);
@@ -75,7 +75,7 @@ public class DrawingCanvas extends JPanel implements StateChangedActionListener,
     }
 
     public void drawShapes(Graphics g) {
-        for (GraphicShape graphicShape : graphicShapes) {
+        for (DrawShapeTool graphicShape : graphicShapes) {
             graphicShape.draw(g);
         }
     }

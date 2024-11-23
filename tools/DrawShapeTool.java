@@ -1,20 +1,25 @@
-package gui.shapes;
+package tools;
 
+import controller.DrawingController;
 import shapes.Shape;
 
+import javax.swing.*;
 import java.awt.*;
 
-public abstract class GraphicShape {
-
+public abstract class DrawShapeTool extends Tool {
     protected Shape shape;
 
     private static final double DEFAULT_STROKE_WIDTH = 2;
 
     protected double strokeWidth;
 
-    public GraphicShape(Shape shape) {
+    public DrawShapeTool(Shape shape) {
         this.shape = shape;
-		strokeWidth = DEFAULT_STROKE_WIDTH;
+        strokeWidth = DEFAULT_STROKE_WIDTH;
+    }
+
+    public DrawShapeTool(DrawingController controller, ImageIcon imageIcon, String tipText) {
+        super(controller, imageIcon, tipText);
     }
 
     public void draw(Graphics g) {
