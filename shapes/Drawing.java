@@ -56,6 +56,15 @@ public class Drawing implements Iterable<Shape> {
 		System.out.println("---");
 	}
 
+	public String toString() {
+		String result = "";
+		result += STR."\{this.getSize().width},\{this.getSize().height}\n";
+		for (Shape s : shapes) {
+			result += s.toString() + "\n";
+		}
+		return result;
+	}
+
 	public void lower(Shape s) {
 		int index = shapes.indexOf(s);
 		if (index < shapes.size() - 1) {
@@ -101,6 +110,12 @@ public class Drawing implements Iterable<Shape> {
 		for (Shape sh : shapes) {
 			selection.add(sh);
 		}
+	}
+
+	public static Drawing fromString(String string) {
+		String[] pointString = string.split(",");
+		Point point = new Point(Integer.parseInt(pointString[0].trim()), Integer.parseInt(pointString[1].trim()));
+		return new Drawing(new Dimension(point.x, point.y));
 	}
 
 

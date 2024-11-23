@@ -103,7 +103,7 @@ public abstract class Shape {
 		return str;
 	}
 
-	@Override
+    @Override
 	public boolean equals(Object obj) {
 		if(obj instanceof Shape otherShape) {
 			return this.point1.equals(otherShape.point1)
@@ -123,6 +123,13 @@ public abstract class Shape {
 	}
 
 	public abstract Shape clone();
+
+	protected static Point getPointFromString(String string) {
+		String[] p = string.split(",");
+
+		return new Point(Integer.parseInt(p[0].trim()), Integer.parseInt(p[1]
+				.trim()));
+	}
 
 
 	// ------------------------------- EVENTS ---------------------------------

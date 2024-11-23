@@ -90,6 +90,13 @@ public class DrawingController implements ColorChangedActionListener {
 		}
 	}
 
+	public void newDrawing(Drawing drawing) {
+		this.drawing = drawing;
+		if (gui != null) {
+			gui.updateDrawing();
+		}
+	}
+
 	public void redo() {
 		if (this.undoManager.canRedo()) {
 			this.undoManager.redo();

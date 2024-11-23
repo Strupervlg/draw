@@ -1,5 +1,6 @@
 package gui;
 
+import exceptions.DrawIOException;
 import gui.MainMenu.NewDrawingDialog;
 
 import java.awt.Dimension;
@@ -68,7 +69,12 @@ public class MenuListener implements ActionListener {
 			fileDialog.showOpenDialog(null);
 			File f = fileDialog.getSelectedFile();
 			if (f != null) {
-				fio.open(f, controller);
+				try {
+					fio.open(f, controller);
+				} catch (DrawIOException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage(),
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		actions.put("Save as", () -> {
@@ -85,7 +91,12 @@ public class MenuListener implements ActionListener {
 
 			File f = fileDialog.getSelectedFile();
 			if (f != null) {
-				fio.save(f, controller);
+				try {
+					fio.save(f, controller);
+				} catch (DrawIOException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage(),
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		actions.put("Export PNG", () -> {
@@ -101,7 +112,12 @@ public class MenuListener implements ActionListener {
 
 			File f = fileDialog.getSelectedFile();
 			if (f != null) {
-				fio.export(f, controller, drawingContainer.getDrawingCanvas());
+				try {
+					fio.export(f, controller, drawingContainer.getDrawingCanvas());
+				} catch (DrawIOException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage(),
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		actions.put("New", () -> {
