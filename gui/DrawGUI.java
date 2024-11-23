@@ -41,7 +41,6 @@ public class DrawGUI extends JFrame {
 			drawing.addRepaintActionListener(drawingCanvas);
 			drawing.addShapeIsInsertedActionListener(drawingCanvas);
 			drawing.addShapeIsDeletedActionListener(drawingCanvas);
-			drawing.addShapeIsDeletedActionListener(mainMenu);
 			setPreferredSize(drawingCanvas.getPreferredSize());
 
 			pack();
@@ -106,8 +105,11 @@ public class DrawGUI extends JFrame {
 
 		MenuListener mainMenuListener = new MenuListener(controller, drawingContainer);
 		mainMenu = new MainMenu(mainMenuListener);
-		controller.getUndoManager().addUndoStackChangedActionListener(mainMenu);
-		controller.getUndoManager().addRedoStackChangedActionListener(mainMenu);
+		controller.addEnableClearActionListener(mainMenu);
+		controller.addEnableSelectAllActionListener(mainMenu);
+		controller.addEnableDeleteActionListener(mainMenu);
+		controller.addEnableUndoActionListener(mainMenu);
+		controller.addEnableRedoActionListener(mainMenu);
 		this.setJMenuBar(mainMenu);
 
 		this.updateDrawing();
@@ -125,13 +127,8 @@ public class DrawGUI extends JFrame {
 		drawingContainer.setDrawing(controller.getDrawing());
 
 		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(tools);
-		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(mainMenu);
-
 		controller.getDrawing().getSelection().addSelectShapeActionListener(tools);
-		controller.getDrawing().getSelection().addSelectShapeActionListener(mainMenu);
-
 		controller.getDrawing().getSelection().addSelectedManyShapesActionListener(tools);
-		controller.getDrawing().getSelection().addSelectedManyShapesActionListener(mainMenu);
 
 		scrollpane.setPreferredSize(new Dimension(drawingContainer
 				.getPreferredSize().width + 100, drawingContainer

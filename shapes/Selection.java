@@ -26,12 +26,12 @@ public class Selection implements Iterable<Shape> {
 		if (selected.contains(s)) {
 			return;
 		}
-		if(this.drawing.getSelection().isEmpty()) {
+		selected.add(s);
+		if(selected.size() == 1) {
 			this.fireSelectedShape(s);
 		} else {
 			this.fireSelectedManyShapes();
 		}
-		selected.add(s);
 		s.setSelected(true);
 		this.fireStateChanged();
 	}
@@ -94,8 +94,22 @@ public class Selection implements Iterable<Shape> {
 			} else {
 				return false;
 			}
+		} else if (obj instanceof Drawing otherDrawing) {
+			if(this.selected.size() == otherDrawing.nShapes()) {
+				boolean result = true;
+				for(int i = 0; i < this.selected.size(); i++) {
+					result &= this.selected.get(i).equals(otherDrawing.getByIndex(i));
+				}
+				return result;
+			} else {
+				return false;
+			}
 		}
 		return super.equals(obj);
+	}
+
+	public boolean isSelectedAll() {
+		return this.equals(drawing);
 	}
 
 	public void move(int x, int y) {

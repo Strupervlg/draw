@@ -139,7 +139,7 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener,
 		Shape selectedShape = event.getShape();
 
 		colorbutton.setEnabled(true);
-		colorbutton.setSelectedColor(selectedShape.getColor());
+		colorbutton.setSelectedColor(selectedShape.getColor(), false);
 
 		if (selectedShape instanceof FillableShape) {
 			fillCheckBox.setEnabled(true);

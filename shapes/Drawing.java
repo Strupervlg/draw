@@ -34,6 +34,10 @@ public class Drawing implements Iterable<Shape> {
 
 	}
 
+	public Shape getByIndex(int i) {
+		return shapes.get(i);
+	}
+
 	public void insertShape(Shape shape) {
 		shapes.add(shape);
 		this.fireShapeIsInserted(shape);
@@ -89,8 +93,8 @@ public class Drawing implements Iterable<Shape> {
 		for(StateChangedActionListener listener: repaintActionListener) {
 			shape.removeRepaintActionListener(listener);
 		}
-		this.fireShapeIsDeleted(shape);
 		shapes.remove(shape);
+		this.fireShapeIsDeleted(shape);
 		this.fireStateChanged();
 	}
 
@@ -116,6 +120,10 @@ public class Drawing implements Iterable<Shape> {
 		String[] pointString = string.split(",");
 		Point point = new Point(Integer.parseInt(pointString[0].trim()), Integer.parseInt(pointString[1].trim()));
 		return new Drawing(new Dimension(point.x, point.y));
+	}
+
+	public boolean isEmpty() {
+		return shapes.isEmpty();
 	}
 
 

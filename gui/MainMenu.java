@@ -26,43 +26,33 @@ import javax.swing.SpinnerNumberModel;
  * @author Alex Lagerstedt
  * 
  */
-public class MainMenu extends JMenuBar implements ClearSelectedShapesActionListener,
-		SelectedManyShapesActionListener, SelectShapeActionListener,
-		RedoStackChangedActionListener, UndoStackChangedActionListener,
-		ShapeIsDeletedActionListener {
+public class MainMenu extends JMenuBar implements EnableClearActionListener,
+		EnableDeleteActionListener, EnableRedoActionListener,
+		EnableUndoActionListener, EnableSelectAllActionListener {
 
 	@Override
-	public void clearSelectedShapes(ClearSelectedShapesActionEvent event) {
-		clear.setEnabled(false);
-		delete.setEnabled(false);
+	public void clearEnabled(EnableClearActionEvent event) {
+		clear.setEnabled(event.isEnable());
 	}
 
 	@Override
-	public void selectedShape(SelectShapeActionEvent event) {
-		clear.setEnabled(true);
-		delete.setEnabled(true);
+	public void deleteEnabled(EnableDeleteActionEvent event) {
+		delete.setEnabled(event.isEnable());
 	}
 
 	@Override
-	public void selectedManyShapes(SelectedManyShapesActionEvent event) {
-		clear.setEnabled(true);
-		delete.setEnabled(true);
+	public void redoEnabled(EnableRedoActionEvent event) {
+		redo.setEnabled(event.isEnable());
 	}
 
 	@Override
-	public void redoStackChanged(RedoStackChangedActionEvent event) {
-		redo.setEnabled(event.canRedo());
+	public void undoEnabled(EnableUndoActionEvent event) {
+		undo.setEnabled(event.isEnable());
 	}
 
 	@Override
-	public void undoStackChanged(UndoStackChangedActionEvent event) {
-		undo.setEnabled(event.canUndo());
-	}
-
-	@Override
-	public void shapeIsDeleted(ShapeIsDeletedActionEvent event) {
-		clear.setEnabled(false);
-		delete.setEnabled(false);
+	public void selectAllEnabled(EnableSelectAllActionEvent event) {
+		all.setEnabled(event.isEnable());
 	}
 
 	/**
@@ -178,6 +168,7 @@ public class MainMenu extends JMenuBar implements ClearSelectedShapesActionListe
 		JMenu selectionMenu = new JMenu("Selection");
 		all = new JMenuItem("Select all", new ImageIcon(
 				"img/edit-select-all.png"));
+		all.setEnabled(false);
 		clear = new JMenuItem("Clear selection", new ImageIcon(
 				"img/edit-clear.png"));
 		clear.setEnabled(false);
