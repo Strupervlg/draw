@@ -4,16 +4,14 @@ import shapes.Shape;
 
 import java.awt.*;
 
-public class ResizeAction implements DrawAction, MergeAction {
-
-    Shape shape;
+public class ResizeAction extends ShapeAction implements DrawAction, MergeAction {
 
     Point newPoint2;
 
     Point oldPoint2;
 
     public ResizeAction(Shape shape, Point point2) {
-        this.shape = shape;
+        super(shape);
         this.newPoint2 = point2;
         this.oldPoint2 = shape.getPoint2();
     }

@@ -8,9 +8,8 @@ import shapes.Selection;
  * MoveAction implements a single undoable action where all the Shapes in a
  * given Selection are moved.
  */
-public class MoveAction implements DrawAction, MergeAction {
+public class MoveAction extends SelectionAction implements DrawAction, MergeAction {
 
-	Selection selected;
 	Point movement;
 
 	boolean isMerged;
@@ -20,14 +19,14 @@ public class MoveAction implements DrawAction, MergeAction {
 	 * direction given by the point. The movement is relative to the shapes
 	 * original position.
 	 * 
-	 * @param s
+	 * @param selected
 	 *            a selection which contains the shapes to be moved
 	 * @param m
 	 *            the amount the shapes should be moved, relative to the
 	 *            original position
 	 */
-	public MoveAction(Selection s, Point m) {
-		this.selected = s.clone();
+	public MoveAction(Selection selected, Point m) {
+		super(selected);
 		this.movement = m;
 		this.isMerged = true;
 	}

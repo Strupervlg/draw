@@ -6,19 +6,17 @@ import shapes.Selection;
  * FillAction implements a undoable action where the fill status of all the
  * Shapes in a given Selection are toggled.
  */
-public class FillAction implements DrawAction {
-
-	Selection selected;
+public class FillAction extends SelectionAction implements DrawAction {
 
 	/**
 	 * Creates a FillAction that filps the fill status of all FillableShape
 	 * instances in the given selection.
 	 * 
-	 * @param s
+	 * @param selected
 	 *            a selection which contains the shapes to be modified
 	 */
-	public FillAction(Selection s) {
-		this.selected = s.clone();
+	public FillAction(Selection selected) {
+		super(selected);
 	}
 
 	public void execute() {
