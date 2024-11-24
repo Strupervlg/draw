@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawLineTool extends DrawShapeTool {
+public class DrawLineTool extends DrawShapeTool implements ColorableTool {
 
     public DrawLineTool(DrawingController controller) {
         super(controller, new ImageIcon("img/line.png"), "Draw lines");

@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawCircleTool extends DrawFillableShapeTool {
+public class DrawCircleTool extends DrawFillableShapeTool implements ColorableTool {
 
     public DrawCircleTool(DrawingController controller) {
         super(controller, new ImageIcon("img/circle.png"), "Draw circles and ellipses");

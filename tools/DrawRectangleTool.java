@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawRectangleTool extends DrawFillableShapeTool {
+public class DrawRectangleTool extends DrawFillableShapeTool implements ColorableTool {
 
     public DrawRectangleTool(DrawingController controller) {
         super(controller, new ImageIcon("img/rectangle.png"), "Draw squares and rectangles");

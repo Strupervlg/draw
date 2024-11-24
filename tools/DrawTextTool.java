@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawTextTool extends DrawShapeTool {
+public class DrawTextTool extends DrawShapeTool implements ColorableTool, FontTool {
 
     public DrawTextTool(DrawingController controller) {
         super(controller, new ImageIcon("img/text.png"), "Create text");
