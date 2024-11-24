@@ -8,6 +8,8 @@ import shapes.Selection;
  */
 public class FillAction extends SelectionAction implements DrawAction {
 
+	private boolean filled;
+
 	/**
 	 * Creates a FillAction that filps the fill status of all FillableShape
 	 * instances in the given selection.
@@ -15,12 +17,13 @@ public class FillAction extends SelectionAction implements DrawAction {
 	 * @param selected
 	 *            a selection which contains the shapes to be modified
 	 */
-	public FillAction(Selection selected) {
+	public FillAction(Selection selected, boolean filled) {
 		super(selected);
+		this.filled = filled;
 	}
 
 	public void execute() {
-		selected.toggleFillShapes();
+		selected.toggleFillShapes(filled);
 	}
 
 	public String getDescription() {
@@ -32,7 +35,7 @@ public class FillAction extends SelectionAction implements DrawAction {
 	}
 
 	public void undo() {
-		execute();
+		selected.toggleFillShapes(!filled);
 	}
 
 }

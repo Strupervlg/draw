@@ -126,9 +126,7 @@ public class DrawGUI extends JFrame {
 
 		drawingContainer.setDrawing(controller.getDrawing());
 
-		controller.getDrawing().getSelection().addClearSelectedShapesActionListener(tools);
 		controller.getDrawing().getSelection().addSelectShapeActionListener(tools);
-		controller.getDrawing().getSelection().addSelectedManyShapesActionListener(tools);
 
 		scrollpane.setPreferredSize(new Dimension(drawingContainer
 				.getPreferredSize().width + 100, drawingContainer

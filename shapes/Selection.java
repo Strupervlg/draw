@@ -27,11 +27,7 @@ public class Selection implements Iterable<Shape> {
 			return;
 		}
 		selected.add(s);
-		if(selected.size() == 1) {
-			this.fireSelectedShape(s);
-		} else {
-			this.fireSelectedManyShapes();
-		}
+		this.fireSelectedShape(s);
 		s.setSelected(true);
 		this.fireStateChanged();
 	}
@@ -118,11 +114,10 @@ public class Selection implements Iterable<Shape> {
 		}
 	}
 
-	public void toggleFillShapes() {
+	public void toggleFillShapes(boolean filled) {
 		for (Shape s : selected) {
-			if (s instanceof FillableShape) {
-				FillableShape fs = (FillableShape) s;
-				fs.setFilled(!(fs).getFilled());
+			if (s instanceof FillableShape fs) {
+                fs.setFilled(filled);
 			}
 		}
 	}
@@ -196,23 +191,6 @@ public class Selection implements Iterable<Shape> {
 			SelectShapeActionEvent event = new SelectShapeActionEvent(listener);
 			event.setShape(shape);
 			listener.selectedShape(event);
-		}
-	}
-
-	private ArrayList<SelectedManyShapesActionListener> selectedManyShapesActionListeners = new ArrayList<>();
-
-	public void addSelectedManyShapesActionListener(SelectedManyShapesActionListener listener) {
-		selectedManyShapesActionListeners.add(listener);
-	}
-
-	public void removeSelectedManyShapesActionListener(SelectedManyShapesActionListener listener) {
-		selectedManyShapesActionListeners.remove(listener);
-	}
-
-	private void fireSelectedManyShapes() {
-		for(SelectedManyShapesActionListener listener: selectedManyShapesActionListeners) {
-			SelectedManyShapesActionEvent event = new SelectedManyShapesActionEvent(listener);
-			listener.selectedManyShapes(event);
 		}
 	}
 }

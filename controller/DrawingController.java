@@ -15,8 +15,7 @@ import shapes.FillableShape;
 import shapes.Shape;
 
 public class DrawingController implements ColorChangedActionListener,
-		ClearSelectedShapesActionListener,
-		SelectedManyShapesActionListener, SelectShapeActionListener,
+		ClearSelectedShapesActionListener, SelectShapeActionListener,
 		RedoStackChangedActionListener, UndoStackChangedActionListener,
 		ShapeIsDeletedActionListener, ShapeIsInsertedActionListener {
 
@@ -66,7 +65,6 @@ public class DrawingController implements ColorChangedActionListener,
 		drawing.addShapeIsInsertedActionListener(this);
 		drawing.getSelection().addClearSelectedShapesActionListener(this);
 		drawing.getSelection().addSelectShapeActionListener(this);
-		drawing.getSelection().addSelectedManyShapesActionListener(this);
 	}
 
 	public Drawing getDrawing() {
@@ -118,8 +116,8 @@ public class DrawingController implements ColorChangedActionListener,
 		drawing.selectAll();
 	}
 
-	public void toggleFilled() {
-		DrawAction toggle = new FillAction(drawing.getSelection());
+	public void toggleFilled(boolean filled) {
+		DrawAction toggle = new FillAction(drawing.getSelection(), filled);
 		toggle.execute();
 		undoManager.addAction(toggle);
 	}
@@ -177,13 +175,6 @@ public class DrawingController implements ColorChangedActionListener,
 
 	@Override
 	public void selectedShape(SelectShapeActionEvent event) {
-		this.fireClearEnabled(true);
-		this.fireDeleteEnabled(true);
-		this.fireSelectAllEnabled(!drawing.getSelection().isSelectedAll());
-	}
-
-	@Override
-	public void selectedManyShapes(SelectedManyShapesActionEvent event) {
 		this.fireClearEnabled(true);
 		this.fireDeleteEnabled(true);
 		this.fireSelectAllEnabled(!drawing.getSelection().isSelectedAll());

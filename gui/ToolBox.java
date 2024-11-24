@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
 import java.util.HashMap;
 
 import javax.swing.Box;
@@ -19,8 +20,7 @@ import shapes.Shape;
 import shapes.Text;
 import tools.*;
 
-public class ToolBox extends JToolBar implements SelectShapeActionListener,
-		SelectedManyShapesActionListener, ClearSelectedShapesActionListener {
+public class ToolBox extends JToolBar implements SelectShapeActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private DrawingController controller;
@@ -60,8 +60,8 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener,
 		}
 
 		fillCheckBox = new FillCheckBox();
-		fillCheckBox.addActionListener(e -> {
-			controller.toggleFilled();
+		fillCheckBox.addItemListener(e -> {
+			controller.toggleFilled(e.getStateChange() ==  ItemEvent.SELECTED);
 		});
 		this.controller.addFillChangedActionListener(fillCheckBox);
 
@@ -141,6 +141,7 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener,
 		Shape selectedShape = event.getShape();
 
 		colorbutton.setEnabled(true);
+		fontSpinner.setEnabled(false);
 		colorbutton.setSelectedColor(selectedShape.getColor(), false);
 
 		if (selectedShape instanceof FillableShape) {
@@ -152,24 +153,7 @@ public class ToolBox extends JToolBar implements SelectShapeActionListener,
 		}
 
 		if (selectedShape instanceof Text) {
-			fontSpinner.setEnabled(true);
 			this.setFontSize(((Text) selectedShape).getFont().getSize());
-		} else {
-			fontSpinner.setEnabled(false);
 		}
-	}
-
-	@Override
-	public void selectedManyShapes(SelectedManyShapesActionEvent event) {
-		fillCheckBox.setEnabled(false);
-		colorbutton.setEnabled(false);
-		fontSpinner.setEnabled(false);
-	}
-
-	@Override
-	public void clearSelectedShapes(ClearSelectedShapesActionEvent event) {
-		fillCheckBox.setEnabled(true);
-		colorbutton.setEnabled(true);
-		fontSpinner.setEnabled(true);
 	}
 }
