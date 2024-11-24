@@ -2,12 +2,16 @@ package tools;
 
 import controller.DrawingController;
 import shapes.Shape;
+import shapes.ShapeFactory;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class DrawShapeTool extends Tool {
+
     protected Shape shape;
+
+    protected ShapeFactory shapeFactory;
 
     private static final double DEFAULT_STROKE_WIDTH = 2;
 
@@ -20,6 +24,7 @@ public abstract class DrawShapeTool extends Tool {
 
     public DrawShapeTool(DrawingController controller, ImageIcon imageIcon, String tipText) {
         super(controller, imageIcon, tipText);
+        this.shapeFactory = new ShapeFactory();
     }
 
     public void draw(Graphics g) {

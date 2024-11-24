@@ -21,8 +21,7 @@ public class DrawCircleTool extends DrawFillableShapeTool implements ColorableTo
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        shape = new Circle(position.x, position.y, controller.getToolBox().getFill());
-        controller.colorShape(shape, controller.getToolBox().getColor());
+        shape = shapeFactory.createCircle(position, controller.getToolBox().getFill(), controller.getToolBox().getColor());
         controller.addShape(shape);
     }
 

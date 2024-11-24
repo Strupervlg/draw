@@ -24,8 +24,7 @@ public class DrawTextTool extends DrawShapeTool implements ColorableTool, FontTo
             if (text == null || text.isEmpty()) {
                 throw new IllegalArgumentException("Empty text");
             }
-            shape = new Text(position.x, position.y, controller.getToolBox().getFontSize(), text);
-            controller.colorShape(shape, controller.getToolBox().getColor());
+            shape = shapeFactory.createText(position, controller.getToolBox().getFontSize(), text, controller.getToolBox().getColor());
             controller.addShape(shape);
             shape = null;
         }

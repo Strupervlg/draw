@@ -21,8 +21,7 @@ public class DrawRectangleTool extends DrawFillableShapeTool implements Colorabl
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        shape = new Rectangle(position.x, position.y, controller.getToolBox().getFill());
-        controller.colorShape(shape, controller.getToolBox().getColor());
+        shape = shapeFactory.createRectangle(position, controller.getToolBox().getFill(), controller.getToolBox().getColor());
         controller.addShape(shape);
     }
 

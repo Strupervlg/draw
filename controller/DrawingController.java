@@ -54,11 +54,6 @@ public class DrawingController implements ColorChangedActionListener,
 		}
 	}
 
-	public void colorShape(Shape shape, Color color) {
-		DrawAction col = new ColorAction(shape, color);
-		col.execute();
-	}
-
 	public void deleteSelectedShapes() {
 		DrawAction del = new DeleteAction(drawing.getSelection());
 		del.execute();

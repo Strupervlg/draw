@@ -21,8 +21,7 @@ public class DrawLineTool extends DrawShapeTool implements ColorableTool {
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        shape = new Line(position.x, position.y);
-        controller.colorShape(shape, controller.getToolBox().getColor());
+        shape = shapeFactory.createLine(position, controller.getToolBox().getColor());
         controller.addShape(shape);
     }
 
