@@ -103,8 +103,7 @@ public class DrawGUI extends JFrame {
 		getContentPane().add(scrollpane, BorderLayout.CENTER);
 		// getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-		MenuListener mainMenuListener = new MenuListener(controller, drawingContainer);
-		mainMenu = new MainMenu(mainMenuListener);
+		mainMenu = new MainMenu(controller, drawingContainer);
 		controller.addEnableClearActionListener(mainMenu);
 		controller.addEnableSelectAllActionListener(mainMenu);
 		controller.addEnableDeleteActionListener(mainMenu);

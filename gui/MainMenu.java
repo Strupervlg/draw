@@ -1,23 +1,19 @@
 package gui;
 
+import controller.DrawIO;
+import controller.DrawingController;
 import events.*;
+import exceptions.DrawIOException;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.HashMap;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * 
@@ -28,7 +24,7 @@ import javax.swing.SpinnerNumberModel;
  */
 public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		EnableDeleteActionListener, EnableRedoActionListener,
-		EnableUndoActionListener, EnableSelectAllActionListener {
+		EnableUndoActionListener, EnableSelectAllActionListener, ActionListener {
 
 	@Override
 	public void clearEnabled(EnableClearActionEvent event) {
@@ -134,6 +130,15 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		}
 	}
 
+	DrawingController controller;
+	JFileChooser fileDialog;
+
+	DrawGUI.DrawingContainer drawingContainer;
+
+	private HashMap<String, Runnable> actions = new HashMap<>();
+
+	private DrawIO fio;
+
 	private static final long serialVersionUID = 0;
 	private JMenuItem undo;
 
@@ -145,7 +150,11 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 
 	private JMenuItem delete;
 
-	public MainMenu(MenuListener listener) {
+	public MainMenu(DrawingController c, DrawGUI.DrawingContainer drawingContainer) {
+		this.controller = c;
+		this.drawingContainer = drawingContainer;
+		fio = new DrawIO();
+		this.makeActions();
 
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem newdrawing = new JMenuItem("New", new ImageIcon(
@@ -207,18 +216,18 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		delete.setAccelerator(KeyStroke.getKeyStroke(
 				java.awt.event.KeyEvent.VK_DELETE, 0));
 
-		quit.addActionListener(listener);
-		all.addActionListener(listener);
-		undo.addActionListener(listener);
-		redo.addActionListener(listener);
-		about.addActionListener(listener);
-		delete.addActionListener(listener);
-		clear.addActionListener(listener);
-		newdrawing.addActionListener(listener);
-		open.addActionListener(listener);
+		quit.addActionListener(this);
+		all.addActionListener(this);
+		undo.addActionListener(this);
+		redo.addActionListener(this);
+		about.addActionListener(this);
+		delete.addActionListener(this);
+		clear.addActionListener(this);
+		newdrawing.addActionListener(this);
+		open.addActionListener(this);
 		// save.addActionListener(listener);
-		saveas.addActionListener(listener);
-		export.addActionListener(listener);
+		saveas.addActionListener(this);
+		export.addActionListener(this);
 
 		fileMenu.add(newdrawing);
 		fileMenu.add(open);
@@ -242,5 +251,102 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		this.add(editMenu);
 		this.add(selectionMenu);
 		this.add(helpMenu);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		if(!actions.containsKey(cmd)) {
+			JOptionPane.showMessageDialog(null, "Not implemented.",
+					"Not implemented", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		actions.get(cmd).run();
+	}
+
+	private void makeActions() {
+		actions.put("Quit", () -> System.exit(0));
+		actions.put("Undo", () -> controller.undo());
+		actions.put("Redo", () -> controller.redo());
+		actions.put("Select all", () -> controller.selectAll());
+		actions.put("Clear selection", () -> controller.clearSelection());
+		actions.put("Delete", () -> controller.deleteSelectedShapes());
+		actions.put("Open", this::performOpenFile);
+		actions.put("Save as", this::performSaveAs);
+		actions.put("Export PNG", this::performExportPNG);
+		actions.put("New", this::performNewDrawing);
+	}
+
+	private void performNewDrawing() {
+		NewDrawingDialog diag = new NewDrawingDialog();
+		Dimension size = diag.getNewSize();
+		System.out.println(size);
+		if (size != null) {
+			controller.newDrawing(size);
+		}
+	}
+
+	private void performExportPNG() {
+		fileDialog = new JFileChooser();
+		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileDialog.setDialogType(JFileChooser.CUSTOM_DIALOG);
+		FileFilter filter = new FileNameExtensionFilter(
+				"Portable Network Graphics", "png");
+		fileDialog.addChoosableFileFilter(filter);
+
+		fileDialog.setSelectedFile(new File("out.png"));
+		fileDialog.showSaveDialog(null);
+
+		File f = fileDialog.getSelectedFile();
+		if (f != null) {
+			try {
+				fio.export(f, controller, drawingContainer.getDrawingCanvas());
+			} catch (DrawIOException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	private void performSaveAs() {
+		fileDialog = new JFileChooser();
+		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		fileDialog.setSelectedFile(new File("new.draw"));
+		FileFilter filter = new FileNameExtensionFilter("Draw files",
+				"draw");
+		fileDialog.addChoosableFileFilter(filter);
+		fileDialog.setFileFilter(filter);
+
+		fileDialog.showSaveDialog(null);
+
+		File f = fileDialog.getSelectedFile();
+		if (f != null) {
+			try {
+				fio.save(f, controller);
+			} catch (DrawIOException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	private void performOpenFile() {
+		fileDialog = new JFileChooser();
+		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		FileFilter filter = new FileNameExtensionFilter("Draw files",
+				"draw");
+		fileDialog.addChoosableFileFilter(filter);
+		fileDialog.setFileFilter(filter);
+
+		fileDialog.showOpenDialog(null);
+		File f = fileDialog.getSelectedFile();
+		if (f != null) {
+			try {
+				fio.open(f, controller);
+			} catch (DrawIOException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(),
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 }
