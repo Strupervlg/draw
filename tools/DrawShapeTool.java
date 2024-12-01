@@ -35,7 +35,7 @@ public abstract class DrawShapeTool extends Tool {
         }
     }
 
-    public void drawSelectionIndicator(Graphics g) {
+    private void drawSelectionIndicator(Graphics g) {
 
         ((Graphics2D) g).setStroke(new BasicStroke((float) 1.0));
         g.setColor(new Color(255, 0, 255));
