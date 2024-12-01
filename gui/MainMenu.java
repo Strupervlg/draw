@@ -294,10 +294,10 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		fileDialog.addChoosableFileFilter(filter);
 
 		fileDialog.setSelectedFile(new File("out.png"));
-		fileDialog.showSaveDialog(null);
+		int result = fileDialog.showSaveDialog(null);
 
 		File f = fileDialog.getSelectedFile();
-		if (f != null) {
+		if (f != null && result == JFileChooser.APPROVE_OPTION) {
 			try {
 				fio.export(f, controller, drawingContainer.getDrawingCanvas());
 			} catch (DrawIOException e) {
@@ -317,10 +317,10 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		fileDialog.addChoosableFileFilter(filter);
 		fileDialog.setFileFilter(filter);
 
-		fileDialog.showSaveDialog(null);
+		int result = fileDialog.showSaveDialog(null);
 
 		File f = fileDialog.getSelectedFile();
-		if (f != null) {
+		if (f != null && result == JFileChooser.APPROVE_OPTION) {
 			try {
 				fio.save(f, controller);
 			} catch (DrawIOException e) {
