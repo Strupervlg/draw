@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import exceptions.DrawIOException;
 import gui.DrawingCanvas;
+import gui.SaveAsDialog;
 import shapes.*;
 
 public class DrawIO {
@@ -27,14 +28,15 @@ public class DrawIO {
 		}
 	}
 
-	public void open(File f, DrawingController c) throws DrawIOException {
+	public void open(File f, DrawingController c, SaveAsDialog dialog) throws DrawIOException {
 		int lineNumber = 1;
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(f));
 			ShapeFactory shapeFactory = new ShapeFactory();
 			String str;
 
-			c.newDrawing(Drawing.fromString(in.readLine()));
+			//TODO не ставить новую а очищать старую и undo manager тоже
+			c.newDrawing(Drawing.fromString(in.readLine()), dialog);
 
 			while ((str = in.readLine()) != null) {
 				try {

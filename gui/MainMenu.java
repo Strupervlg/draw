@@ -3,17 +3,13 @@ package gui;
 import controller.DrawIO;
 import controller.DrawingController;
 import events.*;
-import exceptions.DrawIOException;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.HashMap;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * 
@@ -270,9 +266,9 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		actions.put("Select all", () -> controller.selectAll());
 		actions.put("Clear selection", () -> controller.clearSelection());
 		actions.put("Delete", () -> controller.deleteSelectedShapes());
-		actions.put("Open", this::performOpenFile);
-		actions.put("Save as", this::performSaveAs);
-		actions.put("Export PNG", this::performExportPNG);
+		actions.put("Open", () -> (new OpenFileDialog(fio, controller)).showDialog());
+		actions.put("Save as", () -> (new SaveAsDialog(fio, controller)).showDialog());
+		actions.put("Export PNG", () -> (new ExportPNGDialog(fio, controller, drawingContainer.getDrawingCanvas())).showDialog());
 		actions.put("New", this::performNewDrawing);
 	}
 
@@ -281,72 +277,7 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		Dimension size = diag.getNewSize();
 		System.out.println(size);
 		if (size != null) {
-			controller.newDrawing(size);
-		}
-	}
-
-	private void performExportPNG() {
-		fileDialog = new JFileChooser();
-		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileDialog.setDialogType(JFileChooser.CUSTOM_DIALOG);
-		FileFilter filter = new FileNameExtensionFilter(
-				"Portable Network Graphics", "png");
-		fileDialog.addChoosableFileFilter(filter);
-
-		fileDialog.setSelectedFile(new File("out.png"));
-		int result = fileDialog.showSaveDialog(null);
-
-		File f = fileDialog.getSelectedFile();
-		if (f != null && result == JFileChooser.APPROVE_OPTION) {
-			try {
-				fio.export(f, controller, drawingContainer.getDrawingCanvas());
-			} catch (DrawIOException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage(),
-						"Error", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
-
-	private void performSaveAs() {
-		fileDialog = new JFileChooser();
-		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-		fileDialog.setSelectedFile(new File("new.draw"));
-		FileFilter filter = new FileNameExtensionFilter("Draw files",
-				"draw");
-		fileDialog.addChoosableFileFilter(filter);
-		fileDialog.setFileFilter(filter);
-
-		int result = fileDialog.showSaveDialog(null);
-
-		File f = fileDialog.getSelectedFile();
-		if (f != null && result == JFileChooser.APPROVE_OPTION) {
-			try {
-				fio.save(f, controller);
-			} catch (DrawIOException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage(),
-						"Error", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
-
-	private void performOpenFile() {
-		fileDialog = new JFileChooser();
-		fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		FileFilter filter = new FileNameExtensionFilter("Draw files",
-				"draw");
-		fileDialog.addChoosableFileFilter(filter);
-		fileDialog.setFileFilter(filter);
-
-		fileDialog.showOpenDialog(null);
-		File f = fileDialog.getSelectedFile();
-		if (f != null) {
-			try {
-				fio.open(f, controller);
-			} catch (DrawIOException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage(),
-						"Error", JOptionPane.ERROR_MESSAGE);
-			}
+			controller.newDrawing(size, new SaveAsDialog(fio, controller));
 		}
 	}
 }

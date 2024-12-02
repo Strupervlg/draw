@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import gui.SaveAsDialog;
 import gui.ToolBox;
 import shapes.Drawing;
 import shapes.FillableShape;
@@ -91,14 +92,20 @@ public class DrawingController implements ColorChangedActionListener,
 		}
 	}
 
-	public void newDrawing(Dimension size) {
+	public void newDrawing(Dimension size, SaveAsDialog dialog) {
+		if(!drawing.isEmpty()) {
+			dialog.showDialogWithAsk();
+		}
 		this.setDrawing(new Drawing(size));
 		if (gui != null) {
 			gui.updateDrawing();
 		}
 	}
 
-	public void newDrawing(Drawing drawing) {
+	public void newDrawing(Drawing drawing, SaveAsDialog dialog) {
+		if(!drawing.isEmpty()) {
+			dialog.showDialogWithAsk();
+		}
 		this.setDrawing(drawing);
 		if (gui != null) {
 			gui.updateDrawing();
