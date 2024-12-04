@@ -97,6 +97,11 @@ public class UndoManager {
 		this.fireUndoStackChanged();
 	}
 
+	public void clear() {
+		this.undoStack.clear();
+		this.redoStack.clear();
+	}
+
 
 	// ------------------------------- EVENTS ---------------------------------
 

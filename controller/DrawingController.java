@@ -96,6 +96,7 @@ public class DrawingController implements ColorChangedActionListener,
 		if(!drawing.isEmpty()) {
 			dialog.showDialogWithAsk();
 		}
+		this.undoManager.clear();
 		this.setDrawing(new Drawing(size));
 		if (gui != null) {
 			gui.updateDrawing();
@@ -106,6 +107,7 @@ public class DrawingController implements ColorChangedActionListener,
 		if(!drawing.isEmpty()) {
 			dialog.showDialogWithAsk();
 		}
+		this.undoManager.clear();
 		this.setDrawing(drawing);
 		if (gui != null) {
 			gui.updateDrawing();

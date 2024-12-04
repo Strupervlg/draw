@@ -275,7 +275,6 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 	private void performNewDrawing() {
 		NewDrawingDialog diag = new NewDrawingDialog();
 		Dimension size = diag.getNewSize();
-		System.out.println(size);
 		if (size != null) {
 			controller.newDrawing(size, new SaveAsDialog(fio, controller));
 		}

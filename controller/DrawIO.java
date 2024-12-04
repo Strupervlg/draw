@@ -35,7 +35,6 @@ public class DrawIO {
 			ShapeFactory shapeFactory = new ShapeFactory();
 			String str;
 
-			//TODO не ставить новую а очищать старую и undo manager тоже
 			c.newDrawing(Drawing.fromString(in.readLine()), dialog);
 
 			while ((str = in.readLine()) != null) {
