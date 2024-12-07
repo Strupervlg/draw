@@ -4,7 +4,6 @@ import controller.DrawIO;
 import controller.DrawingController;
 import events.*;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -47,87 +46,7 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		all.setEnabled(event.isEnable());
 	}
 
-	/**
-	 * A dialog that asks the user for the size for a new Drawing.
-	 * 
-	 * @author Alex Lagerstedt
-	 * 
-	 */
-	public static class NewDrawingDialog extends JDialog implements
-			ActionListener {
-
-		private static final long serialVersionUID = 0;
-
-		private JSpinner widthSpinner;
-		private JSpinner heightSpinner;
-		private JButton ok;
-		private JButton cancel;
-
-		private Dimension d;
-
-		public NewDrawingDialog() {
-			d = null;
-			this.setLayout(new BoxLayout(this.getContentPane(),
-					BoxLayout.Y_AXIS));
-
-			this.setTitle("Drawing size");
-			JPanel jp;
-
-			jp = new JPanel();
-			jp.add(new JLabel("Width"));
-			widthSpinner = new JSpinner(
-					new SpinnerNumberModel(600, 10, 4096, 1));
-			jp.add(widthSpinner);
-			this.getContentPane().add(jp);
-
-			jp = new JPanel();
-			jp.add(new JLabel("Height"));
-			heightSpinner = new JSpinner(new SpinnerNumberModel(450, 10, 4096,
-					1));
-			jp.add(heightSpinner);
-			this.getContentPane().add(jp);
-
-			jp = new JPanel();
-			ok = new JButton("OK");
-			cancel = new JButton("Cancel");
-			jp.add(ok);
-			jp.add(cancel);
-			this.getContentPane().add(jp);
-
-			ok.addActionListener(this);
-			cancel.addActionListener(this);
-
-			this.setModal(true);
-
-			this.pack();
-			setVisible(true);
-
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			if (e.getSource().equals(ok)) {
-
-				d = new Dimension((Integer) widthSpinner.getValue(),
-						(Integer) heightSpinner.getValue());
-			}
-
-			setVisible(false);
-		}
-
-		/**
-		 * Returns the size for a new Drawing.
-		 * 
-		 * @return the size chosen in the dialog
-		 */
-		public Dimension getNewSize() {
-			return d;
-		}
-	}
-
 	DrawingController controller;
-	JFileChooser fileDialog;
 
 	DrawGUI.DrawingContainer drawingContainer;
 
@@ -196,11 +115,6 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 				java.awt.event.KeyEvent.VK_Z, java.awt.Event.CTRL_MASK));
 		quit.setAccelerator(KeyStroke.getKeyStroke(
 				java.awt.event.KeyEvent.VK_Q, java.awt.Event.CTRL_MASK));
-		// saveas.setAccelerator(KeyStroke.getKeyStroke(
-		// java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK
-		// | java.awt.Event.SHIFT_MASK));
-		// save.setAccelerator(KeyStroke.getKeyStroke(
-		// java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
 		export.setAccelerator(KeyStroke.getKeyStroke(
 				java.awt.event.KeyEvent.VK_E, java.awt.Event.CTRL_MASK));
 		saveas.setAccelerator(KeyStroke.getKeyStroke(
@@ -221,14 +135,12 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		clear.addActionListener(this);
 		newdrawing.addActionListener(this);
 		open.addActionListener(this);
-		// save.addActionListener(listener);
 		saveas.addActionListener(this);
 		export.addActionListener(this);
 
 		fileMenu.add(newdrawing);
 		fileMenu.add(open);
 		fileMenu.addSeparator();
-		// fileMenu.add(save);
 		fileMenu.add(saveas);
 		fileMenu.add(export);
 		fileMenu.addSeparator();
@@ -269,14 +181,6 @@ public class MainMenu extends JMenuBar implements EnableClearActionListener,
 		actions.put("Open", () -> (new OpenFileDialog(fio, controller)).showDialog());
 		actions.put("Save as", () -> (new SaveAsDialog(fio, controller)).showDialog());
 		actions.put("Export PNG", () -> (new ExportPNGDialog(fio, controller, drawingContainer.getDrawingCanvas())).showDialog());
-		actions.put("New", this::performNewDrawing);
-	}
-
-	private void performNewDrawing() {
-		NewDrawingDialog diag = new NewDrawingDialog();
-		Dimension size = diag.getNewSize();
-		if (size != null) {
-			controller.newDrawing(size, new SaveAsDialog(fio, controller));
-		}
+		actions.put("New", () -> (new NewDrawingDialog(fio, controller)).showDialog());
 	}
 }
