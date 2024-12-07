@@ -1,10 +1,10 @@
 package gui;
 
 import events.*;
-import tools.DrawShapeToolFactory;
 import shapes.Drawing;
 import shapes.Shape;
 import tools.DrawShapeTool;
+import tools.ToolFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,20 +20,20 @@ public class DrawingCanvas extends JPanel implements StateChangedActionListener,
 
     private ArrayList<DrawShapeTool> graphicShapes;
 
-    private DrawShapeToolFactory graphicShapeFactory;
+    private ToolFactory toolFactory;
 
-    public DrawingCanvas(Drawing drawing, ToolBox toolBox) {
+    public DrawingCanvas(Drawing drawing, ToolFactory toolFactory) {
         graphicShapes = new ArrayList<DrawShapeTool>(0);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                toolBox.getSelectedTool().mousePressed(e);
+                toolFactory.getButtons().getSelected().mousePressed(e);
             }
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                toolBox.getSelectedTool().mouseReleased(e);
+                toolFactory.getButtons().getSelected().mouseReleased(e);
             }
         });
 
@@ -41,16 +41,16 @@ public class DrawingCanvas extends JPanel implements StateChangedActionListener,
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                toolBox.getSelectedTool().mouseMoved(e);
+                toolFactory.getButtons().getSelected().mouseMoved(e);
             }
             @Override
             public void mouseDragged(MouseEvent e){
                 super.mouseDragged(e);
-                toolBox.getSelectedTool().mouseDragged(e);
+                toolFactory.getButtons().getSelected().mouseDragged(e);
             }
         });
 
-        graphicShapeFactory = new DrawShapeToolFactory();
+        this.toolFactory = toolFactory;
 
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.WHITE);
@@ -58,12 +58,12 @@ public class DrawingCanvas extends JPanel implements StateChangedActionListener,
     }
 
     public void addShape(Shape shape) {
-        graphicShapes.add(graphicShapeFactory.create(shape));
+        graphicShapes.add(toolFactory.create(shape));
     }
 
     public void removeShape(Shape shape) {
-        graphicShapes.remove(graphicShapeFactory.getGraphicShape(shape));
-        graphicShapeFactory.removeGraphicShape(shape);
+        graphicShapes.remove(toolFactory.getGraphicShape(shape));
+        toolFactory.removeGraphicShape(shape);
     }
 
     public BufferedImage getImage() {

@@ -10,7 +10,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import gui.SaveAsDialog;
-import gui.ToolBox;
 import shapes.Drawing;
 import shapes.FillableShape;
 import shapes.Shape;
@@ -18,13 +17,18 @@ import shapes.Shape;
 public class DrawingController implements ColorChangedActionListener,
 		ClearSelectedShapesActionListener, SelectShapeActionListener,
 		RedoStackChangedActionListener, UndoStackChangedActionListener,
-		ShapeIsDeletedActionListener, ShapeIsInsertedActionListener {
+		ShapeIsDeletedActionListener, ShapeIsInsertedActionListener,
+		FontChangedActionListener, FillChangedActionListener, CurrentColorChangedActionListener {
 
 	private Drawing drawing;
 	private UndoManager undoManager;
 	private DrawGUI gui;
 
-	private ToolBox toolBox;
+	private Color currentColor;
+
+	private boolean currentFill;
+
+	private int currentFontSize;
 
 	public DrawingController(DrawGUI g) {
 		this.setDrawing(new Drawing(new Dimension(500, 380)));
@@ -32,6 +36,9 @@ public class DrawingController implements ColorChangedActionListener,
 		undoManager.addUndoStackChangedActionListener(this);
 		undoManager.addRedoStackChangedActionListener(this);
 		gui = g;
+		currentColor = Color.BLACK;
+		currentFill = false;
+		currentFontSize = 12;
 	}
 
 	public void addShape(Shape s) {
@@ -93,7 +100,7 @@ public class DrawingController implements ColorChangedActionListener,
 	}
 
 	public void newDrawing(Dimension size, SaveAsDialog dialog) {
-		if(!drawing.isEmpty()) {
+		if(!this.drawing.isEmpty()) {
 			dialog.showDialogWithAsk();
 		}
 		this.undoManager.clear();
@@ -104,7 +111,7 @@ public class DrawingController implements ColorChangedActionListener,
 	}
 
 	public void newDrawing(Drawing drawing, SaveAsDialog dialog) {
-		if(!drawing.isEmpty()) {
+		if(!this.drawing.isEmpty()) {
 			dialog.showDialogWithAsk();
 		}
 		this.undoManager.clear();
@@ -126,9 +133,11 @@ public class DrawingController implements ColorChangedActionListener,
 	}
 
 	public void toggleFilled(boolean filled) {
-		DrawAction toggle = new FillAction(drawing.getSelection(), filled);
-		toggle.execute();
-		undoManager.addAction(toggle);
+		if (!drawing.getSelection().isEmpty()) {
+			DrawAction toggle = new FillAction(drawing.getSelection(), filled);
+			toggle.execute();
+			undoManager.addAction(toggle);
+		}
 	}
 
 	public void undo() {
@@ -147,7 +156,9 @@ public class DrawingController implements ColorChangedActionListener,
 		}
 		if(!this.drawing.getSelection().contains(shape)
 				&& this.drawing.getSelection().isEmpty()) {
-			shape.addColorChangedListener(toolBox.getColorbutton());
+			for (ColorChangedActionListener listener : colorChangedActionListeners) {
+				shape.addColorChangedListener(listener);
+			}
 		}
 		this.drawing.getSelection().add(shape);
 		if(shape instanceof FillableShape) {
@@ -162,12 +173,27 @@ public class DrawingController implements ColorChangedActionListener,
 		this.colorSelectedShapes(event.getColor());
 	}
 
-	public void setToolBox(ToolBox toolBox) {
-		this.toolBox = toolBox;
+	public Color getCurrentColor() {
+		return currentColor;
 	}
 
-	public ToolBox getToolBox() {
-		return this.toolBox;
+	private void setCurrentColor(Color currentColor) {
+		this.currentColor = currentColor;
+	}
+	public boolean getCurrentFill() {
+		return currentFill;
+	}
+
+	private void setCurrentFill(boolean currentFill) {
+		this.currentFill = currentFill;
+	}
+
+	public int getCurrentFontSize() {
+		return currentFontSize;
+	}
+
+	private void setCurrentFontSize(int currentFontSize) {
+		this.currentFontSize = currentFontSize;
 	}
 
 	@Override
@@ -206,6 +232,21 @@ public class DrawingController implements ColorChangedActionListener,
 		this.fireSelectAllEnabled(!drawing.getSelection().isSelectedAll());
 	}
 
+	@Override
+	public void fillChanged(FillChangedActionEvent event) {
+		this.setCurrentFill(event.getFill());
+	}
+
+	@Override
+	public void fontChanged(FontChangedActionEvent event) {
+		this.setCurrentFontSize(event.getFontSize());
+	}
+
+	@Override
+	public void currentColorChanged(ColorChangedActionEvent event) {
+		this.setCurrentColor(event.getColor());
+	}
+
 	// ------------------------------- EVENTS ---------------------------------
 
 	private ArrayList<FillChangedActionListener> fillChangedActionListeners = new ArrayList<>();
@@ -216,6 +257,16 @@ public class DrawingController implements ColorChangedActionListener,
 
 	public void removeFillChangedActionListener(FillChangedActionListener listener) {
 		fillChangedActionListeners.remove(listener);
+	}
+
+	private final ArrayList<ColorChangedActionListener> colorChangedActionListeners = new ArrayList<>();
+
+	public void addColorChangedListener(ColorChangedActionListener listener) {
+		colorChangedActionListeners.add(listener);
+	}
+
+	public void removeColorChangedActionListener(ColorChangedActionListener listener) {
+		colorChangedActionListeners.remove(listener);
 	}
 
 

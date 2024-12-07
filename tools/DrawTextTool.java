@@ -7,10 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawTextTool extends DrawShapeTool implements ColorableTool, FontTool {
+public class DrawTextTool extends DrawShapeTool {
 
     public DrawTextTool(DrawingController controller) {
-        super(controller, new ImageIcon("img/text.png"), "Create text");
+        super(controller);
+        this.setIcon(new ImageIcon("img/text.png"));
+        this.setToolTipText("Create text");
+        this.addActionListener(e -> {
+            controller.clearSelection();
+            this.fireFillEnabled(false);
+            this.fireFontEnabled(true);
+        });
     }
 
     @Override
@@ -24,7 +31,7 @@ public class DrawTextTool extends DrawShapeTool implements ColorableTool, FontTo
             if (text == null || text.isEmpty()) {
                 throw new IllegalArgumentException("Empty text");
             }
-            shape = shapeFactory.createText(position, controller.getToolBox().getFontSize(), text, controller.getToolBox().getColor());
+            shape = shapeFactory.createText(position, controller.getCurrentFontSize(), text, controller.getCurrentColor());
             controller.addShape(shape);
             shape = null;
         }

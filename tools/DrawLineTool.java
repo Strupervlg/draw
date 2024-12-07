@@ -7,10 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawLineTool extends DrawShapeTool implements ColorableTool {
+public class DrawLineTool extends DrawShapeTool {
 
     public DrawLineTool(DrawingController controller) {
-        super(controller, new ImageIcon("img/line.png"), "Draw lines");
+        super(controller);
+        this.setIcon(new ImageIcon("img/line.png"));
+        this.setToolTipText("Draw lines");
+        this.addActionListener(e -> {
+            controller.clearSelection();
+            this.fireFillEnabled(false);
+            this.fireFontEnabled(false);
+        });
     }
 
     @Override
@@ -21,7 +28,7 @@ public class DrawLineTool extends DrawShapeTool implements ColorableTool {
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        shape = shapeFactory.createLine(position, controller.getToolBox().getColor());
+        shape = shapeFactory.createLine(position, controller.getCurrentColor());
         controller.addShape(shape);
     }
 

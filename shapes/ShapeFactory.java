@@ -1,26 +1,33 @@
 package shapes;
 
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 public class ShapeFactory {
+
+    private HashMap<String, Class<?>> shapes = new HashMap<>();
+
+    public ShapeFactory() {
+        shapes.put(Circle.getName(), Circle.class);
+        shapes.put(Rectangle.getName(), Rectangle.class);
+        shapes.put(Line.getName(), Line.class);
+        shapes.put(Text.getName(), Text.class);
+    }
+
     public Shape fromString(String string) {
         Shape shape;
         String[] parts = string.split(";");
         parts[0] = parts[0].trim();
-        if (parts[0].equals(Rectangle.getName())) {
-            shape = Circle.fromString(string);
-        }
-        else if (parts[0].equals(Circle.getName())) {
-            shape = Rectangle.fromString(string);
-        }
-        else if (parts[0].equals(Line.getName())) {
-            shape = Line.fromString(string);
-        }
-        else if (parts[0].equals(Text.getName())) {
-            shape = Text.fromString(string);
-        }
-        else {
+        if(!shapes.containsKey(parts[0])) {
             throw new ArrayIndexOutOfBoundsException();
+        }
+        try {
+            shape = (Shape) shapes.get(parts[0])
+                    .getDeclaredMethod("fromString", String.class)
+                    .invoke(null, string);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
         return shape;
     }

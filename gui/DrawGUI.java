@@ -6,6 +6,9 @@ import javax.swing.*;
 
 import shapes.Drawing;
 import controller.DrawingController;
+import tools.ToolFactory;
+
+import static javax.swing.SwingConstants.VERTICAL;
 
 /**
  * Graphical user interface for the Drawing editor "Draw"
@@ -36,7 +39,7 @@ public class DrawGUI extends JFrame {
 		public void setDrawing(Drawing drawing) {
 			this.removeAll();
 
-			drawingCanvas = new DrawingCanvas(drawing, tools);
+			drawingCanvas = new DrawingCanvas(drawing, toolFactory);
 			this.add(drawingCanvas);
 			drawing.addRepaintActionListener(drawingCanvas);
 			drawing.addShapeIsInsertedActionListener(drawingCanvas);
@@ -51,28 +54,11 @@ public class DrawGUI extends JFrame {
 		}
 	}
 
-	public class StatusBar extends JLabel {
-
-		private static final long serialVersionUID = 0;
-
-		public StatusBar() {
-			super();
-			super.setPreferredSize(new Dimension(100, 16));
-			setMessage("Ready");
-		}
-
-		public void setMessage(String message) {
-			setText(" " + message);
-		}
-	}
-
 	private DrawingController controller;
 	private DrawingContainer drawingContainer;
-	private ToolBox tools;
+	private ToolFactory toolFactory;
 	private MainMenu mainMenu;
 	private JScrollPane scrollpane;
-
-	// private StatusBar statusBar;
 
 	private static final long serialVersionUID = 0;
 
@@ -95,13 +81,19 @@ public class DrawGUI extends JFrame {
 		scrollpane = new JScrollPane(drawingContainer);
 
 		controller = new DrawingController(this);
-		tools = new ToolBox(controller);
+		toolFactory = new ToolFactory(controller);
 
-		// statusBar = new StatusBar();
+		JToolBar toolBar = new JToolBar("Tools", VERTICAL);
+		toolBar.setFloatable(false);
+		toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+		toolBar.add(new JLabel("Tools"));
+		toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+		for(JComponent tool : toolFactory.getTools()) {
+			toolBar.add(tool);
+		}
 
-		getContentPane().add(tools, BorderLayout.WEST);
+		getContentPane().add(toolBar, BorderLayout.WEST);
 		getContentPane().add(scrollpane, BorderLayout.CENTER);
-		// getContentPane().add(statusBar, BorderLayout.SOUTH);
 
 		mainMenu = new MainMenu(controller, drawingContainer);
 		controller.addEnableClearActionListener(mainMenu);
@@ -124,8 +116,6 @@ public class DrawGUI extends JFrame {
 	public void updateDrawing() {
 
 		drawingContainer.setDrawing(controller.getDrawing());
-
-		controller.getDrawing().getSelection().addSelectShapeActionListener(tools);
 
 		scrollpane.setPreferredSize(new Dimension(drawingContainer
 				.getPreferredSize().width + 100, drawingContainer

@@ -140,7 +140,7 @@ public abstract class Shape {
 		repaintActionListener.add(listener);
 	}
 
-	public void removeRepaintActionListener(StateChangedActionListener listener) {
+	public void removeColorChangedActionListener(StateChangedActionListener listener) {
 		repaintActionListener.remove(listener);
 	}
 
@@ -157,11 +157,11 @@ public abstract class Shape {
 		colorChangedActionListeners.add(listener);
 	}
 
-	public void removeRepaintActionListener(ColorChangedActionListener listener) {
+	public void removeColorChangedActionListener(ColorChangedActionListener listener) {
 		colorChangedActionListeners.remove(listener);
 	}
 
-	public void clearAllRepaintActionListener() {
+	public void clearAllColorChangedActionListeners() {
 		colorChangedActionListeners.clear();
 	}
 

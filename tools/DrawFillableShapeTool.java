@@ -3,13 +3,12 @@ package tools;
 import controller.DrawingController;
 import shapes.FillableShape;
 
-import javax.swing.*;
 import java.awt.*;
 
 public abstract class DrawFillableShapeTool extends DrawShapeTool {
 
-    public DrawFillableShapeTool(DrawingController controller, ImageIcon imageIcon, String tipText) {
-        super(controller, imageIcon, tipText);
+    public DrawFillableShapeTool(DrawingController controller) {
+        super(controller);
     }
 
     public DrawFillableShapeTool(FillableShape fillableShape) {

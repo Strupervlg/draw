@@ -49,7 +49,7 @@ public class Selection implements Iterable<Shape> {
 	public void empty() {
 		for (Shape s : selected) {
 			s.setSelected(false);
-			s.clearAllRepaintActionListener();
+			s.clearAllColorChangedActionListeners();
 		}
 		selected.clear();
 		this.fireStateChanged();

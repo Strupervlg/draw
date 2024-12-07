@@ -91,7 +91,7 @@ public class Drawing implements Iterable<Shape> {
 
 	public void removeShape(Shape shape) {
 		for(StateChangedActionListener listener: repaintActionListener) {
-			shape.removeRepaintActionListener(listener);
+			shape.removeColorChangedActionListener(listener);
 		}
 		shapes.remove(shape);
 		this.fireShapeIsDeleted(shape);

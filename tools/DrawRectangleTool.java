@@ -7,10 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawRectangleTool extends DrawFillableShapeTool implements ColorableTool {
+public class DrawRectangleTool extends DrawFillableShapeTool {
 
     public DrawRectangleTool(DrawingController controller) {
-        super(controller, new ImageIcon("img/rectangle.png"), "Draw squares and rectangles");
+        super(controller);
+        this.setIcon(new ImageIcon("img/rectangle.png"));
+        this.setToolTipText("Draw squares and rectangles");
+        this.addActionListener(e -> {
+            controller.clearSelection();
+            this.fireFillEnabled(true);
+            this.fireFontEnabled(false);
+        });
     }
 
     @Override
@@ -21,7 +28,7 @@ public class DrawRectangleTool extends DrawFillableShapeTool implements Colorabl
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        shape = shapeFactory.createRectangle(position, controller.getToolBox().getFill(), controller.getToolBox().getColor());
+        shape = shapeFactory.createRectangle(position, controller.getCurrentFill(), controller.getCurrentColor());
         controller.addShape(shape);
     }
 

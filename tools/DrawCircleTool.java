@@ -7,10 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class DrawCircleTool extends DrawFillableShapeTool implements ColorableTool {
+public class DrawCircleTool extends DrawFillableShapeTool {
 
     public DrawCircleTool(DrawingController controller) {
-        super(controller, new ImageIcon("img/circle.png"), "Draw circles and ellipses");
+        super(controller);
+        this.setIcon(new ImageIcon("img/circle.png"));
+        this.setToolTipText("Draw circles and ellipses");
+        this.addActionListener(e -> {
+            controller.clearSelection();
+            this.fireFillEnabled(true);
+            this.fireFontEnabled(false);
+        });
     }
 
     @Override
@@ -21,7 +28,7 @@ public class DrawCircleTool extends DrawFillableShapeTool implements ColorableTo
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
-        shape = shapeFactory.createCircle(position, controller.getToolBox().getFill(), controller.getToolBox().getColor());
+        shape = shapeFactory.createCircle(position, controller.getCurrentFill(), controller.getCurrentColor());
         controller.addShape(shape);
     }
 
