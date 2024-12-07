@@ -7,7 +7,7 @@ public class Text extends Shape {
 	private String text;
 	private Font font;
 
-	public Text(Text text) {
+	Text(Text text) {
 		this(text.point1.x, text.point1.y, text.font.getSize(), text.text);
 	}
 
@@ -23,7 +23,7 @@ public class Text extends Shape {
 	 * @param str
 	 *            the text for the shape
 	 */
-	public Text(int x, int y, int fontSize, String str) {
+	Text(int x, int y, int fontSize, String str) {
 		super(new Point(x, y));
 		font = new Font(null, Font.PLAIN, fontSize);
 		text = str;

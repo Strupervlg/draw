@@ -9,7 +9,7 @@ import shapes.Shape;
  */
 public class AddAction extends ShapeAction implements DrawAction, MergeAction {
 
-	Drawing drawing;
+	private Drawing drawing;
 
 	/**
 	 * Creates an AddAction that adds the given Shape to the given Drawing.
@@ -44,7 +44,7 @@ public class AddAction extends ShapeAction implements DrawAction, MergeAction {
 	public boolean merge(MergeAction other) {
 		if (other instanceof ResizeAction otherCommand) {
 			if (this.shape.equals(otherCommand.shape)) {
-				this.shape.setPoint2(otherCommand.newPoint2);
+				this.shape.setPoint2(otherCommand.getNewPoint2());
 				return true;
 			}
 		}

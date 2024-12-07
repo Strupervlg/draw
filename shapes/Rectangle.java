@@ -4,12 +4,12 @@ import java.awt.*;
 
 public class Rectangle extends FillableShape {
 
-	public Rectangle(int x, int y, boolean filled) {
+	Rectangle(int x, int y, boolean filled) {
 		super(x, y);
 		this.filled = filled;
 	}
 
-	public Rectangle(Rectangle rectangle) {
+	Rectangle(Rectangle rectangle) {
 		this(rectangle.point1.x, rectangle.point1.y, rectangle.filled);
 	}
 

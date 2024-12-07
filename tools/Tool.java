@@ -14,9 +14,9 @@ public abstract class Tool extends JToggleButton {
 
     protected DrawingController controller;
 
-    public Tool(){}
+    Tool(){}
 
-    public Tool(DrawingController controller) {
+    Tool(DrawingController controller) {
         this.controller = controller;
     }
 

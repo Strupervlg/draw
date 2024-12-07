@@ -10,9 +10,9 @@ import shapes.Selection;
  */
 public class MoveAction extends SelectionAction implements DrawAction, MergeAction {
 
-	Point movement;
+	private Point movement;
 
-	boolean isMerged;
+	private boolean isMerged;
 
 	/**
 	 * Creates a MoveAction that moves all Shapes in the given Selection in the

@@ -6,9 +6,9 @@ import java.awt.*;
 
 public class ResizeAction extends ShapeAction implements DrawAction, MergeAction {
 
-    Point newPoint2;
+    private Point newPoint2;
 
-    Point oldPoint2;
+    private Point oldPoint2;
 
     public ResizeAction(Shape shape, Point point2) {
         super(shape);
@@ -53,5 +53,9 @@ public class ResizeAction extends ShapeAction implements DrawAction, MergeAction
     @Override
     public boolean canMerge() {
         return true;
+    }
+
+    Point getNewPoint2() {
+        return newPoint2;
     }
 }

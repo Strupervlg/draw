@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 
 public class DrawTextTool extends DrawShapeTool {
 
-    public DrawTextTool(DrawingController controller) {
+    DrawTextTool(DrawingController controller) {
         super(controller);
         this.setIcon(new ImageIcon("img/text.png"));
         this.setToolTipText("Create text");
@@ -47,7 +47,7 @@ public class DrawTextTool extends DrawShapeTool {
 
     }
 
-    public DrawTextTool(Text text) {
+    DrawTextTool(Text text) {
         super(text);
     }
 

@@ -13,12 +13,12 @@ public class Selection implements Iterable<Shape> {
 
 	private boolean isClone = false;
 
-	public Selection(Drawing drawing) {
+	Selection(Drawing drawing) {
 		this.drawing = drawing;
 		selected = new ArrayList<Shape>(0);
 	}
 
-	public Selection(ArrayList<Shape> list) {
+	Selection(ArrayList<Shape> list) {
 		selected = list;
 	}
 

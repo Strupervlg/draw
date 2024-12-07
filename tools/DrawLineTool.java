@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 
 public class DrawLineTool extends DrawShapeTool {
 
-    public DrawLineTool(DrawingController controller) {
+    DrawLineTool(DrawingController controller) {
         super(controller);
         this.setIcon(new ImageIcon("img/line.png"));
         this.setToolTipText("Draw lines");
@@ -42,7 +42,7 @@ public class DrawLineTool extends DrawShapeTool {
 
     }
 
-    public DrawLineTool(Line line) {
+    DrawLineTool(Line line) {
         super(line);
     }
 

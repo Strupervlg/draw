@@ -25,7 +25,7 @@ public class FontTool extends JPanel implements EnableFontActionListener, FontCh
 
     private JSpinner fontSpinner;
 
-    public FontTool(DrawingController controller) {
+    FontTool(DrawingController controller) {
         fontSpinner = new JSpinner(new SpinnerNumberModel(DEFAULT_VALUE, DEFAULT_MIN, DEFAULT_MAX, DEFAULT_STEP));
         fontSpinner.setPreferredSize(DEFAULT_PREFERRED_SIZE);
         fontSpinner.setMaximumSize(DEFAULT_MAXIMUM_SIZE);

@@ -10,7 +10,7 @@ public abstract class FillableShape extends Shape {
 
 	protected boolean filled;
 
-	public FillableShape(int xpos, int ypos) {
+	FillableShape(int xpos, int ypos) {
 		super(new Point(xpos, ypos));
 		filled = false;
 	}

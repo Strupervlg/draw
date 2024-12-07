@@ -11,8 +11,8 @@ import shapes.Shape;
 
 public class ColorAction extends ShapeAction implements DrawAction {
 
-	Color oldColor;
-	Color newColor;
+	private Color oldColor;
+	private Color newColor;
 
 	/**
 	 * Creates an ColorAction that changes the color of a given Shape.

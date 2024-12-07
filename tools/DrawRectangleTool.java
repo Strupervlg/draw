@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 
 public class DrawRectangleTool extends DrawFillableShapeTool {
 
-    public DrawRectangleTool(DrawingController controller) {
+    DrawRectangleTool(DrawingController controller) {
         super(controller);
         this.setIcon(new ImageIcon("img/rectangle.png"));
         this.setToolTipText("Draw squares and rectangles");
@@ -42,7 +42,7 @@ public class DrawRectangleTool extends DrawFillableShapeTool {
 
     }
 
-    public DrawRectangleTool(Rectangle rectangle) {
+    DrawRectangleTool(Rectangle rectangle) {
         super(rectangle);
     }
 

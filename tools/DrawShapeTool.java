@@ -16,12 +16,12 @@ public abstract class DrawShapeTool extends Tool {
 
     protected double strokeWidth;
 
-    public DrawShapeTool(Shape shape) {
+    DrawShapeTool(Shape shape) {
         this.shape = shape;
         strokeWidth = DEFAULT_STROKE_WIDTH;
     }
 
-    public DrawShapeTool(DrawingController controller) {
+    DrawShapeTool(DrawingController controller) {
         super(controller);
         this.shapeFactory = new ShapeFactory();
     }

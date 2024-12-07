@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 
 public class DrawCircleTool extends DrawFillableShapeTool {
 
-    public DrawCircleTool(DrawingController controller) {
+    DrawCircleTool(DrawingController controller) {
         super(controller);
         this.setIcon(new ImageIcon("img/circle.png"));
         this.setToolTipText("Draw circles and ellipses");
@@ -42,7 +42,7 @@ public class DrawCircleTool extends DrawFillableShapeTool {
 
     }
 
-    public DrawCircleTool(Circle circle) {
+    DrawCircleTool(Circle circle) {
         super(circle);
     }
 

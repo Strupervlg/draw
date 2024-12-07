@@ -18,7 +18,7 @@ public class SelectTool extends Tool {
 
     private boolean isDragged = false;
 
-    public SelectTool(DrawingController controller) {
+    SelectTool(DrawingController controller) {
         super(controller);
         this.setIcon(new ImageIcon("img/cursor.png"));
         this.setToolTipText("Select and move shapes");

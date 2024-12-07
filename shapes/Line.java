@@ -4,11 +4,11 @@ import java.awt.*;
 
 public class Line extends Shape {
 
-	public Line(int x, int y) {
+	Line(int x, int y) {
 		super(new Point(x, y));
 	}
 
-	public Line(Line line) {
+	Line(Line line) {
 		this(line.point1.x, line.point1.y);
 	}
 

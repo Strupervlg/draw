@@ -15,7 +15,7 @@ public class FillTool extends JPanel implements EnableFillActionListener, FillCh
 
     private JCheckBox fillCheckBox;
 
-    public FillTool(DrawingController controller) {
+    FillTool(DrawingController controller) {
         fillCheckBox = new JCheckBox();
         fillCheckBox.addItemListener(e -> {
             this.fireFillChanged(e.getStateChange() == ItemEvent.SELECTED);

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class ColorTool extends JPanel implements ColorChangedActionListener {
     private JButton colorbutton;
 
-    public ColorTool(DrawingController controller) {
+    ColorTool(DrawingController controller) {
         colorbutton = new JButton();
         colorbutton.setPreferredSize(new Dimension(44, 44));
         colorbutton.setMaximumSize(new Dimension(44, 44));
@@ -55,7 +55,7 @@ public class ColorTool extends JPanel implements ColorChangedActionListener {
         setSelectedColor(newColor, true);
     }
 
-    public void setSelectedColor(Color newColor, boolean notify) {
+    private void setSelectedColor(Color newColor, boolean notify) {
         if (newColor == null) return;
 
         this.colorbutton.setBackground(newColor);

@@ -23,7 +23,7 @@ public abstract class Shape {
 	protected Color color;
 	protected boolean selected;
 
-	public Shape(Point p) {
+	Shape(Point p) {
 		point1 = p;
 		point2 = new Point(p.x + DEFAULT_WIDTH, p.y + DEFAULT_HEIGHT);
 		color = DEFAULT_COLOR;

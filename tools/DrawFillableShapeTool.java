@@ -7,11 +7,11 @@ import java.awt.*;
 
 public abstract class DrawFillableShapeTool extends DrawShapeTool {
 
-    public DrawFillableShapeTool(DrawingController controller) {
+    DrawFillableShapeTool(DrawingController controller) {
         super(controller);
     }
 
-    public DrawFillableShapeTool(FillableShape fillableShape) {
+    DrawFillableShapeTool(FillableShape fillableShape) {
         super(fillableShape);
     }
 
