@@ -2,6 +2,7 @@ package tools;
 
 import controller.DrawingController;
 import shapes.Circle;
+import shapes.Shape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,14 +23,14 @@ public class DrawCircleTool extends DrawFillableShapeTool {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        controller.resizeShape(shape, e.getPoint());
+        controller.resizeShape((Shape) shape, e.getPoint());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         Point position = e.getPoint();
         shape = shapeFactory.createCircle(position, controller.getCurrentFill(), controller.getCurrentColor());
-        controller.addShape(shape);
+        controller.addShape((Shape) shape);
     }
 
     @Override

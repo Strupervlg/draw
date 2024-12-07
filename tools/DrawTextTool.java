@@ -1,6 +1,8 @@
 package tools;
 
 import controller.DrawingController;
+import shapes.ReadOnlyText;
+import shapes.Shape;
 import shapes.Text;
 
 import javax.swing.*;
@@ -32,7 +34,7 @@ public class DrawTextTool extends DrawShapeTool {
                 throw new IllegalArgumentException("Empty text");
             }
             shape = shapeFactory.createText(position, controller.getCurrentFontSize(), text, controller.getCurrentColor());
-            controller.addShape(shape);
+            controller.addShape((Shape) shape);
             shape = null;
         }
         catch (IllegalArgumentException exception) {
@@ -53,11 +55,9 @@ public class DrawTextTool extends DrawShapeTool {
 
     @Override
     public void drawShape(Graphics g) {
-        g.setFont(((Text)shape).getFont());
-        int w = g.getFontMetrics().stringWidth(((Text)shape).getText());
-        shape.setPoint2(new Point(shape.getPoint1().x + w, shape.getPoint1().y - ((Text)shape).getFont().getSize()));
+        g.setFont(((ReadOnlyText)shape).getFont());
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g.drawString(((Text)shape).getText(), shape.getPoint1().x, shape.getPoint1().y);
+        g.drawString(((ReadOnlyText)shape).getText(), shape.getPoint1().x, shape.getPoint1().y);
     }
 }

@@ -1,8 +1,10 @@
 package shapes;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 
-public class Text extends Shape {
+public class Text extends Shape implements ReadOnlyText {
 
 	private String text;
 	private Font font;
@@ -27,6 +29,9 @@ public class Text extends Shape {
 		super(new Point(x, y));
 		font = new Font(null, Font.PLAIN, fontSize);
 		text = str;
+		FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true);
+		int w = (int) font.getStringBounds(this.getText(), frc).getWidth();
+		this.setPoint2(new Point(this.getPoint1().x + w, this.getPoint1().y - (this).getFont().getSize()));
 	}
 
 	public Font getFont() {

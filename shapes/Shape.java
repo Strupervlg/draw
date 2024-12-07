@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 
-public abstract class Shape {
+public abstract class Shape implements ReadOnlyShape {
 
 	private static final Color DEFAULT_COLOR = Color.BLACK;
 

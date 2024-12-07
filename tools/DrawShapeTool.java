@@ -1,6 +1,7 @@
 package tools;
 
 import controller.DrawingController;
+import shapes.ReadOnlyShape;
 import shapes.Shape;
 import shapes.ShapeFactory;
 
@@ -8,7 +9,7 @@ import java.awt.*;
 
 public abstract class DrawShapeTool extends Tool {
 
-    protected Shape shape;
+    protected ReadOnlyShape shape;
 
     protected ShapeFactory shapeFactory;
 
