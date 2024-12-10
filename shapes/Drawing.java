@@ -62,7 +62,7 @@ public class Drawing implements Iterable<Shape> {
 
 	public String toString() {
 		String result = "";
-		result += STR."\{this.getSize().width},\{this.getSize().height}\n";
+		result += this.getSize().width + "," + this.getSize().height + "\n";
 		for (Shape s : shapes) {
 			result += s.toString() + "\n";
 		}
